@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LUCIA CRM - 顧客管理システム</title>
+<meta name="description" content="美容サロンの顧客管理（CRM）システムデモ。顧客情報、来店履歴、セグメント配信、売上分析を一元管理できます。">
+<meta property="og:title" content="LUCIA CRM - 顧客管理システム - デモ">
+<meta property="og:description" content="美容サロンの顧客管理（CRM）システムデモ。顧客情報、来店履歴、セグメント配信、売上分析を一元管理できます。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://portfolio.logence.co.jp/demos/crm/">
+<meta property="og:image" content="https://portfolio.logence.co.jp/img/ogp.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="LUCIA CRM - 顧客管理システム - デモ">
+<meta name="twitter:description" content="美容サロンの顧客管理（CRM）システムデモ。顧客情報、来店履歴、セグメント配信、売上分析を一元管理できます。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Shippori+Mincho:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --sidebar-w:240px;
+  --bg:#F8FAFC;--bg-card:#FFFFFF;
+  --text-primary:#0F172A;--text-secondary:#475569;--text-muted:#94A3B8;
+  --border:#E2E8F0;--border-light:#F1F5F9;
+  --accent:#6366F1;--accent-light:#EEF2FF;--accent-hover:#4F46E5;
+  --vip:#D97706;--vip-bg:#FFFBEB;--vip-border:#FDE68A;
+  --repeater:#2563EB;--repeater-bg:#EFF6FF;--repeater-border:#BFDBFE;
+  --new:#059669;--new-bg:#ECFDF5;--new-border:#A7F3D0;
+  --dormant:#64748B;--dormant-bg:#F8FAFC;--dormant-border:#CBD5E1;
+  --danger:#EF4444;--success:#10B981;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.05);
+  --shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:0 4px 6px -1px rgba(0,0,0,.08),0 2px 4px -2px rgba(0,0,0,.04);
+  --shadow-lg:0 10px 15px -3px rgba(0,0,0,.08),0 4px 6px -4px rgba(0,0,0,.04);
+  --radius:8px;--radius-lg:12px;
+  --font-sans:'DM Sans','Zen Kaku Gothic New',system-ui,sans-serif;
+  --font-display:'Shippori Mincho','Zen Kaku Gothic New',serif;
+  --transition:150ms cubic-bezier(.4,0,.2,1);
+}
+html{font-size:14px}
+body{font-family:var(--font-sans);background:var(--bg);color:var(--text-primary);line-height:1.5;-webkit-font-smoothing:antialiased}
+
+/* ─── Demo Banner ─── */
+.demo-banner{position:fixed;top:0;left:0;right:0;z-index:9999;background:linear-gradient(135deg,#6366F1,#8B5CF6);color:#fff;text-align:center;padding:6px 16px;font-size:12px;font-weight:500;letter-spacing:.3px}
+.demo-banner a{color:#E0E7FF;margin-left:8px;text-decoration:underline;text-underline-offset:2px}
+
+/* ─── Sidebar ─── */
+.sidebar{position:fixed;top:30px;left:0;bottom:0;width:var(--sidebar-w);background:#0F172A;color:#CBD5E1;display:flex;flex-direction:column;z-index:100;transition:transform .3s ease}
+.sidebar-brand{padding:24px 20px 20px;border-bottom:1px solid rgba(255,255,255,.06)}
+.sidebar-brand h1{font-family:var(--font-display);font-size:18px;font-weight:600;color:#F8FAFC;letter-spacing:1px}
+.sidebar-brand p{font-size:11px;color:#64748B;margin-top:2px;letter-spacing:.5px}
+.sidebar-nav{flex:1;padding:12px 0;overflow-y:auto}
+.nav-section{padding:0 12px;margin-bottom:4px}
+.nav-section-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:1.2px;color:#475569;padding:8px 12px 6px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:400;color:#94A3B8;transition:all var(--transition);margin:1px 0;text-decoration:none;position:relative}
+.nav-item:hover{background:rgba(255,255,255,.05);color:#E2E8F0}
+.nav-item.active{background:rgba(99,102,241,.15);color:#A5B4FC;font-weight:500}
+.nav-item.active::before{content:'';position:absolute;left:-12px;top:50%;transform:translateY(-50%);width:3px;height:20px;background:#6366F1;border-radius:0 3px 3px 0}
+.nav-item i{width:18px;text-align:center;font-size:14px;opacity:.7}
+.nav-item.active i{opacity:1}
+.nav-item .badge-count{margin-left:auto;background:rgba(99,102,241,.2);color:#A5B4FC;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600}
+.sidebar-footer{padding:16px 20px;border-top:1px solid rgba(255,255,255,.06)}
+.sidebar-footer .user-info{display:flex;align-items:center;gap:10px}
+.sidebar-footer .user-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#6366F1,#A78BFA);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#fff}
+.sidebar-footer .user-name{font-size:12px;font-weight:500;color:#E2E8F0}
+.sidebar-footer .user-role{font-size:10px;color:#64748B}
+
+/* ─── Main ─── */
+.main{margin-left:var(--sidebar-w);margin-top:30px;min-height:calc(100vh - 30px)}
+.main-inner{padding:24px 28px 40px}
+
+/* ─── Tabs ─── */
+.tab-bar{display:flex;gap:0;border-bottom:1px solid var(--border);padding:0 28px;background:#fff}
+.tab-btn{padding:14px 20px;font-size:13px;font-weight:500;color:var(--text-muted);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;transition:all var(--transition);font-family:var(--font-sans)}
+.tab-btn:hover{color:var(--text-secondary)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* ─── KPI Cards ─── */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+.kpi-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;position:relative;overflow:hidden;transition:box-shadow var(--transition)}
+.kpi-card:hover{box-shadow:var(--shadow-md)}
+.kpi-card .kpi-icon{width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;margin-bottom:12px}
+.kpi-card .kpi-label{font-size:12px;color:var(--text-muted);font-weight:500;margin-bottom:4px}
+.kpi-card .kpi-value{font-size:26px;font-weight:700;line-height:1.1;letter-spacing:-.5px}
+.kpi-card .kpi-sub{font-size:11px;color:var(--text-muted);margin-top:6px;display:flex;align-items:center;gap:4px}
+.kpi-card .kpi-sub .up{color:var(--success)}
+.kpi-card .kpi-sub .down{color:var(--danger)}
+.kpi-icon.purple{background:#EEF2FF;color:#6366F1}
+.kpi-icon.green{background:#ECFDF5;color:#059669}
+.kpi-icon.blue{background:#EFF6FF;color:#2563EB}
+.kpi-icon.amber{background:#FFFBEB;color:#D97706}
+
+/* ─── Dashboard Grid ─── */
+.dash-grid{display:grid;grid-template-columns:1fr 340px;gap:16px;margin-bottom:24px}
+.chart-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px}
+.chart-card h3{font-size:14px;font-weight:600;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between}
+.chart-card h3 span{font-size:11px;font-weight:400;color:var(--text-muted)}
+
+/* ─── Table Card ─── */
+.table-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+.table-toolbar{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--border-light);flex-wrap:wrap}
+.search-box{position:relative;flex:0 0 260px}
+.search-box input{width:100%;padding:8px 12px 8px 34px;border:1px solid var(--border);border-radius:6px;font-size:13px;font-family:var(--font-sans);background:var(--bg);transition:border-color var(--transition);outline:none}
+.search-box input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(99,102,241,.1)}
+.search-box input::placeholder{color:var(--text-muted)}
+.search-box i{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:13px}
+.filter-group{display:flex;gap:4px;margin-left:auto}
+.filter-btn{padding:6px 14px;border:1px solid var(--border);border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;background:#fff;color:var(--text-secondary);transition:all var(--transition);font-family:var(--font-sans)}
+.filter-btn:hover{border-color:#CBD5E1;background:var(--bg)}
+.filter-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:780px}
+thead{background:var(--bg)}
+thead th{padding:10px 16px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--text-muted);text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;cursor:pointer;user-select:none;transition:color var(--transition)}
+thead th:hover{color:var(--text-primary)}
+thead th .sort-icon{margin-left:4px;font-size:10px;opacity:.4}
+thead th.sort-active{color:var(--accent)}
+thead th.sort-active .sort-icon{opacity:1;color:var(--accent)}
+tbody tr{border-bottom:1px solid var(--border-light);cursor:pointer;transition:background var(--transition)}
+tbody tr:nth-child(even){background:#FAFBFD}
+tbody tr:hover{background:#F0F4FF}
+tbody td{padding:12px 16px;font-size:13px;color:var(--text-primary);white-space:nowrap}
+.customer-name{font-weight:600;display:flex;align-items:center;gap:8px}
+.customer-avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;flex-shrink:0}
+.status-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.2px}
+.status-badge.vip{background:var(--vip-bg);color:var(--vip);border:1px solid var(--vip-border)}
+.status-badge.repeater{background:var(--repeater-bg);color:var(--repeater);border:1px solid var(--repeater-border)}
+.status-badge.new{background:var(--new-bg);color:var(--new);border:1px solid var(--new-border)}
+.status-badge.dormant{background:var(--dormant-bg);color:var(--dormant);border:1px solid var(--dormant-border)}
+.status-badge i{font-size:8px}
+.table-footer{display:flex;align-items:center;justify-content:space-between;padding:12px 20px;border-top:1px solid var(--border-light);font-size:12px;color:var(--text-muted)}
+.pagination{display:flex;gap:4px}
+.page-btn{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:1px solid var(--border);border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;background:#fff;color:var(--text-secondary);transition:all var(--transition)}
+.page-btn:hover{border-color:var(--accent);color:var(--accent)}
+.page-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.page-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* ─── Detail Panel ─── */
+.panel-overlay{position:fixed;inset:0;background:rgba(15,23,42,.3);z-index:200;opacity:0;pointer-events:none;transition:opacity .25s ease}
+.panel-overlay.open{opacity:1;pointer-events:auto}
+.detail-panel{position:fixed;top:30px;right:0;bottom:0;width:480px;max-width:100vw;background:#fff;z-index:201;transform:translateX(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);box-shadow:-8px 0 30px rgba(0,0,0,.1);display:flex;flex-direction:column}
+.detail-panel.open{transform:translateX(0)}
+.panel-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;border-bottom:1px solid var(--border)}
+.panel-header h2{font-size:16px;font-weight:600}
+.panel-close{width:32px;height:32px;border:none;background:var(--bg);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text-secondary);font-size:14px;transition:all var(--transition)}
+.panel-close:hover{background:#E2E8F0;color:var(--text-primary)}
+.panel-body{flex:1;overflow-y:auto;padding:24px}
+.profile-section{display:flex;align-items:flex-start;gap:16px;margin-bottom:24px}
+.profile-avatar{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:600;color:#fff;flex-shrink:0}
+.profile-info h3{font-size:18px;font-weight:600;margin-bottom:2px}
+.profile-info .profile-id{font-size:11px;color:var(--text-muted)}
+.profile-meta{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+.meta-item{padding:10px 12px;background:var(--bg);border-radius:8px}
+.meta-item .meta-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--text-muted);margin-bottom:3px}
+.meta-item .meta-value{font-size:13px;font-weight:500}
+.meta-item .meta-value.connected{color:var(--success)}
+.section-title{font-size:13px;font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px;color:var(--text-primary)}
+.section-title i{font-size:12px;color:var(--accent)}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:24px}
+.stat-item{text-align:center;padding:12px 8px;background:var(--bg);border-radius:8px}
+.stat-item .stat-val{font-size:18px;font-weight:700;color:var(--accent)}
+.stat-item .stat-label{font-size:10px;color:var(--text-muted);margin-top:2px}
+.visit-list{margin-bottom:24px}
+.visit-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border-light)}
+.visit-item:last-child{border-bottom:none}
+.visit-date{font-size:12px;color:var(--text-muted);width:80px;flex-shrink:0}
+.visit-menu{flex:1;font-size:13px;font-weight:500}
+.visit-stylist{font-size:11px;color:var(--text-muted)}
+.visit-price{font-size:13px;font-weight:600;color:var(--text-primary)}
+.memo-box{background:var(--bg);border-radius:8px;padding:12px;font-size:13px;color:var(--text-secondary);line-height:1.6;min-height:60px}
+
+/* ─── Segment Tab ─── */
+.segment-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.segment-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;transition:box-shadow var(--transition)}
+.segment-card:hover{box-shadow:var(--shadow-md)}
+.segment-card .seg-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px}
+.segment-card .seg-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.segment-card .seg-count{font-size:28px;font-weight:700;letter-spacing:-.5px}
+.segment-card .seg-label{font-size:11px;color:var(--text-muted);font-weight:500}
+.segment-card h4{font-size:15px;font-weight:600;margin-bottom:4px}
+.segment-card p{font-size:12px;color:var(--text-secondary);margin-bottom:16px;line-height:1.5}
+.segment-card .seg-cond{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-muted);margin-bottom:16px;padding:8px 10px;background:var(--bg);border-radius:6px}
+.segment-card .seg-cond i{font-size:10px;color:var(--accent)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all var(--transition);font-family:var(--font-sans)}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-hover)}
+.btn-outline{background:#fff;color:var(--text-secondary);border:1px solid var(--border)}
+.btn-outline:hover{border-color:#CBD5E1;background:var(--bg)}
+.btn-sm{padding:6px 12px;font-size:12px}
+
+/* ─── Toast ─── */
+.toast{position:fixed;bottom:24px;right:24px;z-index:9999;background:#0F172A;color:#F8FAFC;padding:12px 20px;border-radius:8px;font-size:13px;font-weight:500;box-shadow:var(--shadow-lg);opacity:0;transform:translateY(10px);transition:all .3s ease;pointer-events:none;display:flex;align-items:center;gap:8px}
+.toast.show{opacity:1;transform:translateY(0)}
+.toast i{color:var(--success)}
+
+/* ─── Responsive ─── */
+.menu-toggle{display:none;position:fixed;top:38px;left:12px;z-index:150;width:36px;height:36px;border-radius:8px;border:1px solid var(--border);background:#fff;cursor:pointer;align-items:center;justify-content:center;font-size:16px;color:var(--text-secondary);box-shadow:var(--shadow)}
+@media(max-width:1024px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .menu-toggle{display:flex}
+  .kpi-row{grid-template-columns:repeat(2,1fr)}
+  .dash-grid{grid-template-columns:1fr}
+  .detail-panel{width:100%}
+}
+@media(max-width:640px){
+  .kpi-row{grid-template-columns:1fr}
+  .search-box{flex:1 1 100%}
+  .filter-group{flex-wrap:wrap}
+  .main-inner{padding:16px 12px 32px}
+  .tab-bar{padding:0 8px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .tab-btn{padding:12px 14px;font-size:12px;white-space:nowrap;flex-shrink:0}
+  .profile-meta{grid-template-columns:1fr}
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .demo-banner{font-size:11px;padding:5px 10px}
+  .menu-toggle{z-index:101}
+}
+</style>
+</head>
+<body>
+
+<!-- Demo Banner -->
+<div class="demo-banner">
+  <i class="fas fa-info-circle"></i>
+  ポートフォリオ用のデモです — 表示されているデータは全て架空のものです
+  <a href="/">← ポートフォリオに戻る</a>
+</div>
+
+<!-- Mobile Toggle -->
+<button class="menu-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">
+  <i class="fas fa-bars"></i>
+</button>
+
+<!-- Sidebar -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <h1>LUCIA CRM</h1>
+    <p>Customer Management</p>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section">
+      <div class="nav-section-label">メイン</div>
+      <a class="nav-item" data-tab="dashboard" onclick="switchTab('dashboard')">
+        <i class="fas fa-th-large"></i>ダッシュボード
+      </a>
+      <a class="nav-item active" data-tab="customers" onclick="switchTab('customers')">
+        <i class="fas fa-users"></i>顧客一覧
+        <span class="badge-count">1,284</span>
+      </a>
+      <a class="nav-item" data-tab="segments" onclick="switchTab('segments')">
+        <i class="fas fa-layer-group"></i>セグメント
+      </a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-label">運用</div>
+      <a class="nav-item" onclick="showToast('配信履歴は現在開発中です')">
+        <i class="fas fa-paper-plane"></i>配信履歴
+      </a>
+      <a class="nav-item" onclick="showToast('分析機能は現在開発中です')">
+        <i class="fas fa-chart-line"></i>分析
+      </a>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-label">システム</div>
+      <a class="nav-item" onclick="showToast('設定画面は現在開発中です')">
+        <i class="fas fa-cog"></i>設定
+      </a>
+    </div>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="user-info">
+      <div class="user-avatar">TM</div>
+      <div>
+        <div class="user-name">松田 拓也</div>
+        <div class="user-role">オーナー・管理者</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- Main Content -->
+<div class="main">
+  <!-- Tabs -->
+  <div class="tab-bar">
+    <button class="tab-btn" data-tab="dashboard" onclick="switchTab('dashboard')">ダッシュボード</button>
+    <button class="tab-btn active" data-tab="customers" onclick="switchTab('customers')">顧客一覧</button>
+    <button class="tab-btn" data-tab="segments" onclick="switchTab('segments')">セグメント配信</button>
+  </div>
+
+  <!-- ═══════ Dashboard Tab ═══════ -->
+  <div class="tab-content" id="tab-dashboard">
+    <div class="main-inner">
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <div class="kpi-icon purple"><i class="fas fa-users"></i></div>
+          <div class="kpi-label">総顧客数</div>
+          <div class="kpi-value">1,284</div>
+          <div class="kpi-sub"><span class="up"><i class="fas fa-arrow-up"></i> +3.2%</span> 先月比</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon green"><i class="fas fa-user-plus"></i></div>
+          <div class="kpi-label">今月の新規顧客</div>
+          <div class="kpi-value">23</div>
+          <div class="kpi-sub"><span class="up"><i class="fas fa-arrow-up"></i> +8件</span> 先月比</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon blue"><i class="fas fa-redo"></i></div>
+          <div class="kpi-label">リピート率</div>
+          <div class="kpi-value">72<span style="font-size:16px;font-weight:500">%</span></div>
+          <div class="kpi-sub"><span class="up"><i class="fas fa-arrow-up"></i> +2.1%</span> 先月比</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon amber"><i class="fas fa-yen-sign"></i></div>
+          <div class="kpi-label">平均客単価</div>
+          <div class="kpi-value">¥8,400</div>
+          <div class="kpi-sub"><span class="down"><i class="fas fa-arrow-down"></i> -¥200</span> 先月比</div>
+        </div>
+      </div>
+
+      <div class="dash-grid">
+        <div class="chart-card">
+          <h3>月別 来店数推移 <span>過去6ヶ月</span></h3>
+          <canvas id="chartVisits" height="220"></canvas>
+        </div>
+        <div class="chart-card">
+          <h3>顧客ステータス分布</h3>
+          <canvas id="chartStatus" height="220"></canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <h3>売上トレンド <span>過去6ヶ月</span></h3>
+        <canvas id="chartRevenue" height="160"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ Customers Tab ═══════ -->
+  <div class="tab-content active" id="tab-customers">
+    <div class="main-inner">
+      <!-- KPI Mini -->
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <div class="kpi-icon purple"><i class="fas fa-users"></i></div>
+          <div class="kpi-label">総顧客数</div>
+          <div class="kpi-value">1,284</div>
+          <div class="kpi-sub"><span class="up"><i class="fas fa-arrow-up"></i> +3.2%</span> 先月比</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon green"><i class="fas fa-user-plus"></i></div>
+          <div class="kpi-label">今月の新規顧客</div>
+          <div class="kpi-value">23</div>
+          <div class="kpi-sub"><span class="up"><i class="fas fa-arrow-up"></i> +8件</span> 先月比</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon blue"><i class="fas fa-redo"></i></div>
+          <div class="kpi-label">リピート率</div>
+          <div class="kpi-value">72<span style="font-size:16px;font-weight:500">%</span></div>
+          <div class="kpi-sub"><span class="up"><i class="fas fa-arrow-up"></i> +2.1%</span> 先月比</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon amber"><i class="fas fa-yen-sign"></i></div>
+          <div class="kpi-label">平均客単価</div>
+          <div class="kpi-value">¥8,400</div>
+          <div class="kpi-sub"><span class="down"><i class="fas fa-arrow-down"></i> -¥200</span> 先月比</div>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="table-card">
+        <div class="table-toolbar">
+          <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="顧客名で検索..." oninput="filterCustomers()">
+          </div>
+          <div class="filter-group">
+            <button class="filter-btn active" data-filter="all" onclick="setFilter('all',this)">全員</button>
+            <button class="filter-btn" data-filter="vip" onclick="setFilter('vip',this)">VIP</button>
+            <button class="filter-btn" data-filter="repeater" onclick="setFilter('repeater',this)">リピーター</button>
+            <button class="filter-btn" data-filter="new" onclick="setFilter('new',this)">新規</button>
+            <button class="filter-btn" data-filter="dormant" onclick="setFilter('dormant',this)">休眠</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th onclick="sortTable('name')">顧客名 <span class="sort-icon"><i class="fas fa-sort"></i></span></th>
+                <th onclick="sortTable('lastVisit')" class="sort-active">最終来店日 <span class="sort-icon"><i class="fas fa-sort-down"></i></span></th>
+                <th onclick="sortTable('visits')">来店回数 <span class="sort-icon"><i class="fas fa-sort"></i></span></th>
+                <th onclick="sortTable('revenue')">累計売上 <span class="sort-icon"><i class="fas fa-sort"></i></span></th>
+                <th>担当</th>
+                <th>ステータス</th>
+              </tr>
+            </thead>
+            <tbody id="customerBody"></tbody>
+          </table>
+        </div>
+        <div class="table-footer">
+          <span>全 <strong id="totalCount">18</strong> 件を表示</span>
+          <div class="pagination">
+            <button class="page-btn" disabled><i class="fas fa-chevron-left"></i></button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">3</button>
+            <button class="page-btn"><i class="fas fa-chevron-right"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════ Segments Tab ═══════ -->
+  <div class="tab-content" id="tab-segments">
+    <div class="main-inner">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px">
+        <div>
+          <h2 style="font-size:20px;font-weight:700">セグメント配信</h2>
+          <p style="font-size:13px;color:var(--text-muted);margin-top:2px">ターゲットを絞ったDM配信でリピート率を向上させましょう</p>
+        </div>
+        <button class="btn btn-primary" onclick="showToast('新しいセグメントの作成機能は開発中です')">
+          <i class="fas fa-plus"></i> 新規セグメント
+        </button>
+      </div>
+      <div class="segment-grid">
+        <div class="segment-card">
+          <div class="seg-header">
+            <div class="seg-icon" style="background:var(--vip-bg);color:var(--vip)"><i class="fas fa-crown"></i></div>
+            <div style="text-align:right">
+              <div class="seg-count" style="color:var(--vip)">86</div>
+              <div class="seg-label">対象顧客</div>
+            </div>
+          </div>
+          <h4>VIP顧客</h4>
+          <p>長期的にご愛顧いただいている大切なお客様。特別なオファーで関係を深めましょう。</p>
+          <div class="seg-cond"><i class="fas fa-filter"></i>来店回数 10回以上 かつ 累計売上 ¥100,000以上</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-primary btn-sm" onclick="showToast('DM作成画面を準備中です')"><i class="fas fa-paper-plane"></i> DMを送る</button>
+            <button class="btn btn-outline btn-sm" onclick="showToast('顧客リストを表示中...')"><i class="fas fa-list"></i> 一覧を見る</button>
+          </div>
+        </div>
+        <div class="segment-card">
+          <div class="seg-header">
+            <div class="seg-icon" style="background:var(--dormant-bg);color:var(--dormant)"><i class="fas fa-clock"></i></div>
+            <div style="text-align:right">
+              <div class="seg-count" style="color:var(--dormant)">142</div>
+              <div class="seg-label">対象顧客</div>
+            </div>
+          </div>
+          <h4>休眠顧客</h4>
+          <p>最近ご来店がないお客様。カムバッククーポンで再来店を促しましょう。</p>
+          <div class="seg-cond"><i class="fas fa-filter"></i>最終来店日が 3ヶ月以上前</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-primary btn-sm" onclick="showToast('DM作成画面を準備中です')"><i class="fas fa-paper-plane"></i> DMを送る</button>
+            <button class="btn btn-outline btn-sm" onclick="showToast('顧客リストを表示中...')"><i class="fas fa-list"></i> 一覧を見る</button>
+          </div>
+        </div>
+        <div class="segment-card">
+          <div class="seg-header">
+            <div class="seg-icon" style="background:#FFF1F2;color:#E11D48"><i class="fas fa-birthday-cake"></i></div>
+            <div style="text-align:right">
+              <div class="seg-count" style="color:#E11D48">31</div>
+              <div class="seg-label">対象顧客</div>
+            </div>
+          </div>
+          <h4>今月のお誕生日</h4>
+          <p>今月お誕生日を迎えるお客様。バースデークーポンで特別な月を演出しましょう。</p>
+          <div class="seg-cond"><i class="fas fa-filter"></i>誕生月が 2026年7月</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-primary btn-sm" onclick="showToast('DM作成画面を準備中です')"><i class="fas fa-paper-plane"></i> DMを送る</button>
+            <button class="btn btn-outline btn-sm" onclick="showToast('顧客リストを表示中...')"><i class="fas fa-list"></i> 一覧を見る</button>
+          </div>
+        </div>
+        <div class="segment-card">
+          <div class="seg-header">
+            <div class="seg-icon" style="background:var(--new-bg);color:var(--new)"><i class="fas fa-seedling"></i></div>
+            <div style="text-align:right">
+              <div class="seg-count" style="color:var(--new)">23</div>
+              <div class="seg-label">対象顧客</div>
+            </div>
+          </div>
+          <h4>今月の新規顧客</h4>
+          <p>今月初めてご来店いただいたお客様。フォローアップで2回目の来店を促しましょう。</p>
+          <div class="seg-cond"><i class="fas fa-filter"></i>登録日が 2026年7月 かつ 来店回数 1回</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-primary btn-sm" onclick="showToast('DM作成画面を準備中です')"><i class="fas fa-paper-plane"></i> DMを送る</button>
+            <button class="btn btn-outline btn-sm" onclick="showToast('顧客リストを表示中...')"><i class="fas fa-list"></i> 一覧を見る</button>
+          </div>
+        </div>
+        <div class="segment-card">
+          <div class="seg-header">
+            <div class="seg-icon" style="background:var(--repeater-bg);color:var(--repeater)"><i class="fas fa-sync-alt"></i></div>
+            <div style="text-align:right">
+              <div class="seg-count" style="color:var(--repeater)">58</div>
+              <div class="seg-label">対象顧客</div>
+            </div>
+          </div>
+          <h4>来店頻度ダウン</h4>
+          <p>以前は月1回ペースだったが、最近間隔が空いているお客様を検知。</p>
+          <div class="seg-cond"><i class="fas fa-filter"></i>前回間隔が 平均来店間隔の2倍以上</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-primary btn-sm" onclick="showToast('DM作成画面を準備中です')"><i class="fas fa-paper-plane"></i> DMを送る</button>
+            <button class="btn btn-outline btn-sm" onclick="showToast('顧客リストを表示中...')"><i class="fas fa-list"></i> 一覧を見る</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Detail Panel -->
+<div class="panel-overlay" id="panelOverlay" onclick="closePanel()"></div>
+<div class="detail-panel" id="detailPanel">
+  <div class="panel-header">
+    <h2>顧客詳細</h2>
+    <button class="panel-close" onclick="closePanel()"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="panel-body" id="panelBody"></div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════ Mock Data ═══════
+const avatarColors = ['#6366F1','#8B5CF6','#EC4899','#F59E0B','#10B981','#3B82F6','#EF4444','#14B8A6','#F97316','#6366F1'];
+const stylists = ['佐藤 美咲','田中 翔太','鈴木 あかり','山本 健一'];
+
+const customers = [
+  {id:'C-0001',name:'高橋 優子',kana:'タカハシ ユウコ',phone:'090-1234-5678',email:'takahashi.y@email.com',line:true,registered:'2021-03-15',lastVisit:'2026-07-12',visits:42,revenue:378000,stylist:'佐藤 美咲',status:'vip',memo:'カラーは毎回アッシュ系希望。白髪染めNG。頭皮が敏感なため、オーガニック製品を使用。',history:[{date:'2026-07-12',menu:'カット + カラー + トリートメント',stylist:'佐藤 美咲',price:15800},{date:'2026-06-08',menu:'カラー + ヘッドスパ',stylist:'佐藤 美咲',price:12600},{date:'2026-05-11',menu:'カット + カラー',stylist:'佐藤 美咲',price:11000},{date:'2026-04-06',menu:'カット + トリートメント',stylist:'佐藤 美咲',price:9800},{date:'2026-03-01',menu:'カラー + パーマ',stylist:'佐藤 美咲',price:16500}]},
+  {id:'C-0002',name:'山田 里奈',kana:'ヤマダ リナ',phone:'090-2345-6789',email:'yamada.r@email.com',line:true,registered:'2022-08-20',lastVisit:'2026-07-10',visits:28,revenue:252000,stylist:'田中 翔太',status:'vip',memo:'ボブスタイルが定番。毛量が多いので軽さ重視。誕生日は12月。',history:[{date:'2026-07-10',menu:'カット + カラー',stylist:'田中 翔太',price:11000},{date:'2026-06-15',menu:'カット + トリートメント',stylist:'田中 翔太',price:9800},{date:'2026-05-20',menu:'カラー',stylist:'田中 翔太',price:8500},{date:'2026-04-18',menu:'カット',stylist:'田中 翔太',price:6600},{date:'2026-03-22',menu:'カット + パーマ',stylist:'田中 翔太',price:13200}]},
+  {id:'C-0003',name:'中村 健太',kana:'ナカムラ ケンタ',phone:'080-3456-7890',email:'nakamura.k@email.com',line:false,registered:'2023-01-10',lastVisit:'2026-07-08',visits:18,revenue:133200,stylist:'鈴木 あかり',status:'repeater',memo:'ビジネスマン。短めのスタイルを好む。平日夜の予約が多い。',history:[{date:'2026-07-08',menu:'カット',stylist:'鈴木 あかり',price:6600},{date:'2026-06-03',menu:'カット + 眉カット',stylist:'鈴木 あかり',price:7400},{date:'2026-04-28',menu:'カット',stylist:'鈴木 あかり',price:6600},{date:'2026-03-25',menu:'カット + ヘッドスパ',stylist:'鈴木 あかり',price:9100},{date:'2026-02-15',menu:'カット',stylist:'鈴木 あかり',price:6600}]},
+  {id:'C-0004',name:'小林 さくら',kana:'コバヤシ サクラ',phone:'090-4567-8901',email:'kobayashi.s@email.com',line:true,registered:'2020-11-05',lastVisit:'2026-07-05',visits:56,revenue:564800,stylist:'佐藤 美咲',status:'vip',memo:'当店最古参の一人。毎月カット+カラー。周年イベント必ず参加。紹介多数。',history:[{date:'2026-07-05',menu:'カット + カラー + ヘッドスパ',stylist:'佐藤 美咲',price:14300},{date:'2026-06-01',menu:'カット + カラー',stylist:'佐藤 美咲',price:11000},{date:'2026-05-04',menu:'カラー + トリートメント',stylist:'佐藤 美咲',price:11500},{date:'2026-04-02',menu:'カット + カラー',stylist:'佐藤 美咲',price:11000},{date:'2026-02-28',menu:'カット + パーマ + トリートメント',stylist:'佐藤 美咲',price:18700}]},
+  {id:'C-0005',name:'渡辺 大輝',kana:'ワタナベ ダイキ',phone:'080-5678-9012',email:'watanabe.d@email.com',line:true,registered:'2024-06-18',lastVisit:'2026-07-03',visits:8,revenue:57600,stylist:'山本 健一',status:'repeater',memo:'大学生。パーマスタイルに挑戦中。学割適用。',history:[{date:'2026-07-03',menu:'カット + パーマ',stylist:'山本 健一',price:12100},{date:'2026-05-28',menu:'カット',stylist:'山本 健一',price:5500},{date:'2026-04-15',menu:'カット + カラー',stylist:'山本 健一',price:9900},{date:'2026-03-08',menu:'カット',stylist:'山本 健一',price:5500},{date:'2026-01-20',menu:'カット + パーマ',stylist:'山本 健一',price:12100}]},
+  {id:'C-0006',name:'伊藤 真由',kana:'イトウ マユ',phone:'090-6789-0123',email:'ito.m@email.com',line:true,registered:'2023-04-22',lastVisit:'2026-06-28',visits:15,revenue:142500,stylist:'田中 翔太',status:'repeater',memo:'ロングヘア。縮毛矯正を年2回。カラーはナチュラルブラウン系。',history:[{date:'2026-06-28',menu:'カット + 縮毛矯正',stylist:'田中 翔太',price:18000},{date:'2026-05-18',menu:'カット + トリートメント',stylist:'田中 翔太',price:9800},{date:'2026-04-10',menu:'カラー',stylist:'田中 翔太',price:8500},{date:'2026-03-05',menu:'カット',stylist:'田中 翔太',price:6600},{date:'2026-01-28',menu:'カット + 縮毛矯正',stylist:'田中 翔太',price:18000}]},
+  {id:'C-0007',name:'加藤 翼',kana:'カトウ ツバサ',phone:'080-7890-1234',email:'kato.t@email.com',line:false,registered:'2024-11-30',lastVisit:'2026-07-01',visits:6,revenue:39600,stylist:'鈴木 あかり',status:'repeater',memo:'高校生。お母様と一緒に来店されることが多い。',history:[{date:'2026-07-01',menu:'カット',stylist:'鈴木 あかり',price:5500},{date:'2026-05-10',menu:'カット',stylist:'鈴木 あかり',price:5500},{date:'2026-03-15',menu:'カット + カラー',stylist:'鈴木 あかり',price:9900},{date:'2026-01-08',menu:'カット',stylist:'鈴木 あかり',price:5500},{date:'2025-11-12',menu:'カット',stylist:'鈴木 あかり',price:5500}]},
+  {id:'C-0008',name:'吉田 恵美',kana:'ヨシダ エミ',phone:'090-8901-2345',email:'yoshida.e@email.com',line:true,registered:'2022-02-14',lastVisit:'2026-04-02',visits:22,revenue:209000,stylist:'佐藤 美咲',status:'dormant',memo:'引っ越しの可能性あり。最近来店が途絶えている。フォロー要。',history:[{date:'2026-04-02',menu:'カット + カラー',stylist:'佐藤 美咲',price:11000},{date:'2026-02-20',menu:'カラー + トリートメント',stylist:'佐藤 美咲',price:11500},{date:'2026-01-15',menu:'カット',stylist:'佐藤 美咲',price:6600},{date:'2025-12-10',menu:'カット + カラー + パーマ',stylist:'佐藤 美咲',price:17600},{date:'2025-11-05',menu:'カット + トリートメント',stylist:'佐藤 美咲',price:9800}]},
+  {id:'C-0009',name:'佐々木 蓮',kana:'ササキ レン',phone:'080-9012-3456',email:'sasaki.r@email.com',line:true,registered:'2025-12-01',lastVisit:'2026-06-25',visits:4,revenue:26400,stylist:'山本 健一',status:'new',memo:'友人の紹介で来店。マッシュスタイルが気に入っている様子。',history:[{date:'2026-06-25',menu:'カット',stylist:'山本 健一',price:6600},{date:'2026-05-08',menu:'カット + カラー',stylist:'山本 健一',price:9900},{date:'2026-03-20',menu:'カット',stylist:'山本 健一',price:6600},{date:'2025-12-01',menu:'カット',stylist:'山本 健一',price:6600}]},
+  {id:'C-0010',name:'松本 あおい',kana:'マツモト アオイ',phone:'090-0123-4567',email:'matsumoto.a@email.com',line:true,registered:'2026-06-10',lastVisit:'2026-07-11',visits:2,revenue:18700,stylist:'鈴木 あかり',status:'new',memo:'SNSを見て来店。インスタでスタイル写真の投稿OKとのこと。',history:[{date:'2026-07-11',menu:'カット + カラー + トリートメント',stylist:'鈴木 あかり',price:14300},{date:'2026-06-10',menu:'カット',stylist:'鈴木 あかり',price:6600}]},
+  {id:'C-0011',name:'井上 達也',kana:'イノウエ タツヤ',phone:'080-1111-2222',email:'inoue.t@email.com',line:false,registered:'2023-07-08',lastVisit:'2026-03-10',visits:12,revenue:91200,stylist:'山本 健一',status:'dormant',memo:'転勤で来れなくなった可能性。年賀状は送付済み。',history:[{date:'2026-03-10',menu:'カット',stylist:'山本 健一',price:6600},{date:'2026-01-05',menu:'カット + ヘッドスパ',stylist:'山本 健一',price:9100},{date:'2025-11-20',menu:'カット',stylist:'山本 健一',price:6600},{date:'2025-09-15',menu:'カット + カラー',stylist:'山本 健一',price:9900},{date:'2025-07-08',menu:'カット',stylist:'山本 健一',price:6600}]},
+  {id:'C-0012',name:'木村 花',kana:'キムラ ハナ',phone:'090-3333-4444',email:'kimura.h@email.com',line:true,registered:'2021-09-12',lastVisit:'2026-07-09',visits:38,revenue:361000,stylist:'田中 翔太',status:'vip',memo:'ヘアドネーション経験あり。オーガニックカラーのみ使用。アレルギー：パラフェニレンジアミン',history:[{date:'2026-07-09',menu:'カット + オーガニックカラー',stylist:'田中 翔太',price:13200},{date:'2026-06-05',menu:'トリートメント + ヘッドスパ',stylist:'田中 翔太',price:8800},{date:'2026-05-01',menu:'カット + オーガニックカラー',stylist:'田中 翔太',price:13200},{date:'2026-03-28',menu:'カット',stylist:'田中 翔太',price:6600},{date:'2026-02-22',menu:'カット + オーガニックカラー + トリートメント',stylist:'田中 翔太',price:16500}]},
+  {id:'C-0013',name:'林 美月',kana:'ハヤシ ミヅキ',phone:'080-5555-6666',email:'hayashi.m@email.com',line:true,registered:'2026-07-01',lastVisit:'2026-07-01',visits:1,revenue:6600,stylist:'鈴木 あかり',status:'new',memo:'初回来店。ショートボブ希望。次回カラーも検討中。',history:[{date:'2026-07-01',menu:'カット',stylist:'鈴木 あかり',price:6600}]},
+  {id:'C-0014',name:'清水 龍之介',kana:'シミズ リュウノスケ',phone:'090-7777-8888',email:'shimizu.r@email.com',line:false,registered:'2022-05-20',lastVisit:'2026-02-14',visits:16,revenue:124800,stylist:'佐藤 美咲',status:'dormant',memo:'奥様の清水さんも当店顧客。最近ご夫婦で来られていない。',history:[{date:'2026-02-14',menu:'カット + カラー',stylist:'佐藤 美咲',price:11000},{date:'2025-12-28',menu:'カット',stylist:'佐藤 美咲',price:6600},{date:'2025-11-10',menu:'カット + ヘッドスパ',stylist:'佐藤 美咲',price:9100},{date:'2025-09-05',menu:'カット',stylist:'佐藤 美咲',price:6600},{date:'2025-07-22',menu:'カット + カラー',stylist:'佐藤 美咲',price:11000}]},
+  {id:'C-0015',name:'斉藤 結衣',kana:'サイトウ ユイ',phone:'080-9999-0000',email:'saito.y@email.com',line:true,registered:'2024-02-28',lastVisit:'2026-07-06',visits:11,revenue:104500,stylist:'田中 翔太',status:'repeater',memo:'ブリーチ+ハイトーンカラーが多い。ダメージケアに注力。次回はインナーカラー希望。',history:[{date:'2026-07-06',menu:'カラー（ブリーチ+ハイトーン）',stylist:'田中 翔太',price:14300},{date:'2026-05-30',menu:'カット + トリートメント',stylist:'田中 翔太',price:9800},{date:'2026-04-22',menu:'カラー + トリートメント',stylist:'田中 翔太',price:12100},{date:'2026-03-10',menu:'カット + カラー',stylist:'田中 翔太',price:11000},{date:'2026-01-18',menu:'カット',stylist:'田中 翔太',price:6600}]},
+  {id:'C-0016',name:'森 拓海',kana:'モリ タクミ',phone:'090-1122-3344',email:'mori.t@email.com',line:true,registered:'2025-08-14',lastVisit:'2026-06-20',visits:7,revenue:52800,stylist:'山本 健一',status:'repeater',memo:'IT企業勤務。在宅ワーク多め。2ヶ月に1回ペース。',history:[{date:'2026-06-20',menu:'カット + ヘッドスパ',stylist:'山本 健一',price:9100},{date:'2026-04-18',menu:'カット',stylist:'山本 健一',price:6600},{date:'2026-02-10',menu:'カット + カラー',stylist:'山本 健一',price:9900},{date:'2025-12-15',menu:'カット',stylist:'山本 健一',price:6600},{date:'2025-10-20',menu:'カット',stylist:'山本 健一',price:6600}]},
+  {id:'C-0017',name:'岡田 莉子',kana:'オカダ リコ',phone:'080-5566-7788',email:'okada.r@email.com',line:true,registered:'2026-06-28',lastVisit:'2026-06-28',visits:1,revenue:11000,stylist:'佐藤 美咲',status:'new',memo:'ホットペッパーのクーポンで初来店。カット+カラーのセットメニュー。',history:[{date:'2026-06-28',menu:'カット + カラー（初回クーポン）',stylist:'佐藤 美咲',price:11000}]},
+  {id:'C-0018',name:'藤田 陽菜',kana:'フジタ ハルナ',phone:'090-9900-1100',email:'fujita.h@email.com',line:true,registered:'2023-10-05',lastVisit:'2026-07-13',visits:20,revenue:186000,stylist:'鈴木 あかり',status:'vip',memo:'ネイルサロン併用。いつもカット+カラーのフルコース。友人紹介3件。',history:[{date:'2026-07-13',menu:'カット + カラー + トリートメント',stylist:'鈴木 あかり',price:14300},{date:'2026-06-08',menu:'カット + カラー',stylist:'鈴木 あかり',price:11000},{date:'2026-05-04',menu:'カラー + ヘッドスパ',stylist:'鈴木 あかり',price:11800},{date:'2026-04-01',menu:'カット + カラー + パーマ',stylist:'鈴木 あかり',price:17600},{date:'2026-02-25',menu:'カット + トリートメント',stylist:'鈴木 あかり',price:9800}]}
+];
+
+// ═══════ State ═══════
+let currentFilter = 'all';
+let currentSort = 'lastVisit';
+let sortAsc = false;
+let searchQuery = '';
+
+// ═══════ Tab Switching ═══════
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('tab-' + tabId).classList.add('active');
+  document.querySelectorAll(`.tab-btn[data-tab="${tabId}"]`).forEach(b => b.classList.add('active'));
+  document.querySelectorAll(`.nav-item[data-tab="${tabId}"]`).forEach(n => n.classList.add('active'));
+  // Close mobile sidebar
+  document.querySelector('.sidebar').classList.remove('open');
+}
+
+// ═══════ Filter & Sort ═══════
+function setFilter(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable();
+}
+
+function filterCustomers() {
+  searchQuery = document.getElementById('searchInput').value.toLowerCase();
+  renderTable();
+}
+
+function sortTable(key) {
+  if (currentSort === key) { sortAsc = !sortAsc; }
+  else { currentSort = key; sortAsc = key === 'name'; }
+  // Update header styles
+  document.querySelectorAll('thead th').forEach(th => {
+    th.classList.remove('sort-active');
+    th.querySelector('.sort-icon i').className = 'fas fa-sort';
+  });
+  const headers = {name:0,lastVisit:1,visits:2,revenue:3};
+  const th = document.querySelectorAll('thead th')[headers[key]];
+  if (th) {
+    th.classList.add('sort-active');
+    th.querySelector('.sort-icon i').className = sortAsc ? 'fas fa-sort-up' : 'fas fa-sort-down';
+  }
+  renderTable();
+}
+
+function getFiltered() {
+  let list = [...customers];
+  if (currentFilter !== 'all') list = list.filter(c => c.status === currentFilter);
+  if (searchQuery) list = list.filter(c => c.name.toLowerCase().includes(searchQuery) || c.kana.toLowerCase().includes(searchQuery));
+  list.sort((a, b) => {
+    let va, vb;
+    switch(currentSort) {
+      case 'name': va = a.kana; vb = b.kana; break;
+      case 'lastVisit': va = a.lastVisit; vb = b.lastVisit; break;
+      case 'visits': va = a.visits; vb = b.visits; break;
+      case 'revenue': va = a.revenue; vb = b.revenue; break;
+      default: va = a.lastVisit; vb = b.lastVisit;
+    }
+    if (va < vb) return sortAsc ? -1 : 1;
+    if (va > vb) return sortAsc ? 1 : -1;
+    return 0;
+  });
+  return list;
+}
+
+// ═══════ Render Table ═══════
+function renderTable() {
+  const list = getFiltered();
+  const tbody = document.getElementById('customerBody');
+  const totalEl = document.getElementById('totalCount');
+  totalEl.textContent = list.length;
+
+  tbody.innerHTML = list.map((c, i) => {
+    const color = avatarColors[i % avatarColors.length];
+    const initials = c.name.split(' ').map(n=>n[0]).join('');
+    const statusLabel = {vip:'VIP',repeater:'リピーター',new:'新規',dormant:'休眠'}[c.status];
+    const statusIcon = {vip:'fa-crown',repeater:'fa-redo',new:'fa-sparkles',dormant:'fa-moon'}[c.status];
+    const visitDate = formatDate(c.lastVisit);
+    return `<tr onclick="openPanel(${customers.indexOf(c)})">
+      <td><div class="customer-name"><div class="customer-avatar" style="background:${color}">${initials}</div>${c.name}</div></td>
+      <td>${visitDate}</td>
+      <td>${c.visits}回</td>
+      <td>¥${c.revenue.toLocaleString()}</td>
+      <td>${c.stylist}</td>
+      <td><span class="status-badge ${c.status}"><i class="fas ${statusIcon}"></i>${statusLabel}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function formatDate(d) {
+  const [y,m,day] = d.split('-');
+  return `${y}/${m}/${day}`;
+}
+
+// ═══════ Detail Panel ═══════
+function openPanel(idx) {
+  const c = customers[idx];
+  const color = avatarColors[idx % avatarColors.length];
+  const initials = c.name.split(' ').map(n=>n[0]).join('');
+  const statusLabel = {vip:'VIP',repeater:'リピーター',new:'新規',dormant:'休眠'}[c.status];
+  const avgPrice = Math.round(c.revenue / c.visits);
+  const firstVisit = new Date(c.registered);
+  const lastVisit = new Date(c.lastVisit);
+  const months = Math.max(1, Math.round((lastVisit - firstVisit) / (1000*60*60*24*30)));
+  const freq = c.visits > 1 ? Math.round(months / c.visits * 10) / 10 : '-';
+
+  document.getElementById('panelBody').innerHTML = `
+    <div class="profile-section">
+      <div class="profile-avatar" style="background:${color}">${initials}</div>
+      <div class="profile-info">
+        <h3>${c.name}</h3>
+        <div class="profile-id">${c.id} · <span class="status-badge ${c.status}" style="font-size:10px;padding:2px 8px">${statusLabel}</span></div>
+      </div>
+    </div>
+    <div class="profile-meta">
+      <div class="meta-item"><div class="meta-label">電話番号</div><div class="meta-value">${c.phone}</div></div>
+      <div class="meta-item"><div class="meta-label">メール</div><div class="meta-value" style="font-size:12px">${c.email}</div></div>
+      <div class="meta-item"><div class="meta-label">LINE連携</div><div class="meta-value ${c.line?'connected':''}">${c.line?'<i class="fab fa-line" style="margin-right:4px"></i>連携済み':'未連携'}</div></div>
+      <div class="meta-item"><div class="meta-label">登録日</div><div class="meta-value">${formatDate(c.registered)}</div></div>
+    </div>
+
+    <div class="section-title"><i class="fas fa-chart-bar"></i>累計データ</div>
+    <div class="stats-row">
+      <div class="stat-item"><div class="stat-val">${c.visits}</div><div class="stat-label">総来店回数</div></div>
+      <div class="stat-item"><div class="stat-val">¥${(c.revenue/1000).toFixed(0)}k</div><div class="stat-label">総売上</div></div>
+      <div class="stat-item"><div class="stat-val">¥${avgPrice.toLocaleString()}</div><div class="stat-label">平均単価</div></div>
+      <div class="stat-item"><div class="stat-val">${freq}ヶ月</div><div class="stat-label">来店頻度</div></div>
+    </div>
+
+    <div class="section-title"><i class="fas fa-history"></i>来店履歴（直近5回）</div>
+    <div class="visit-list">
+      ${c.history.map(h => `
+        <div class="visit-item">
+          <div class="visit-date">${formatDate(h.date)}</div>
+          <div style="flex:1"><div class="visit-menu">${h.menu}</div><div class="visit-stylist">${h.stylist}</div></div>
+          <div class="visit-price">¥${h.price.toLocaleString()}</div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div class="section-title"><i class="fas fa-sticky-note"></i>メモ</div>
+    <div class="memo-box">${c.memo}</div>
+  `;
+
+  document.getElementById('panelOverlay').classList.add('open');
+  document.getElementById('detailPanel').classList.add('open');
+}
+
+function closePanel() {
+  document.getElementById('panelOverlay').classList.remove('open');
+  document.getElementById('detailPanel').classList.remove('open');
+}
+
+// ═══════ Toast ═══════
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.innerHTML = '<i class="fas fa-check-circle"></i>' + msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ═══════ Charts ═══════
+function initCharts() {
+  const fontFamily = "'DM Sans','Zen Kaku Gothic New',sans-serif";
+  Chart.defaults.font.family = fontFamily;
+  Chart.defaults.font.size = 12;
+  Chart.defaults.color = '#94A3B8';
+
+  // Visits Chart
+  new Chart(document.getElementById('chartVisits'), {
+    type: 'bar',
+    data: {
+      labels: ['2月','3月','4月','5月','6月','7月'],
+      datasets: [{
+        label: '来店数',
+        data: [186, 198, 172, 210, 195, 224],
+        backgroundColor: 'rgba(99,102,241,.15)',
+        borderColor: '#6366F1',
+        borderWidth: 2,
+        borderRadius: 6,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, grid: { color: '#F1F5F9' }, border: { display: false } },
+        x: { grid: { display: false }, border: { display: false } }
+      }
+    }
+  });
+
+  // Status Donut
+  new Chart(document.getElementById('chartStatus'), {
+    type: 'doughnut',
+    data: {
+      labels: ['VIP','リピーター','新規','休眠'],
+      datasets: [{
+        data: [86, 628, 312, 258],
+        backgroundColor: ['#F59E0B','#3B82F6','#10B981','#94A3B8'],
+        borderWidth: 0,
+        spacing: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '65%',
+      plugins: {
+        legend: { position: 'bottom', labels: { padding: 16, usePointStyle: true, pointStyle: 'circle' } }
+      }
+    }
+  });
+
+  // Revenue Chart
+  new Chart(document.getElementById('chartRevenue'), {
+    type: 'line',
+    data: {
+      labels: ['2月','3月','4月','5月','6月','7月'],
+      datasets: [{
+        label: '売上',
+        data: [1560000, 1680000, 1440000, 1750000, 1620000, 1890000],
+        borderColor: '#6366F1',
+        backgroundColor: 'rgba(99,102,241,.06)',
+        fill: true,
+        tension: .4,
+        pointRadius: 4,
+        pointBackgroundColor: '#fff',
+        pointBorderColor: '#6366F1',
+        pointBorderWidth: 2,
+        pointHoverRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: {
+          beginAtZero: false,
+          grid: { color: '#F1F5F9' },
+          border: { display: false },
+          ticks: { callback: v => '¥' + (v/10000).toFixed(0) + '万' }
+        },
+        x: { grid: { display: false }, border: { display: false } }
+      }
+    }
+  });
+}
+
+// ═══════ Init ═══════
+document.addEventListener('DOMContentLoaded', () => {
+  renderTable();
+  initCharts();
+});
+
+// ESC to close panel
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
+</script>
+</body>
+</html>

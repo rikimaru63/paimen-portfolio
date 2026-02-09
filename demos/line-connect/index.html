@@ -1,0 +1,2267 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LINE公式アカウント管理 | Hair Salon LUCIA</title>
+<meta name="description" content="LINE公式アカウント管理ダッシュボードデモ。友だち管理、メッセージ配信、チャット対応、リッチメニュー設定を体験できます。">
+<meta property="og:title" content="LINE公式アカウント管理 | Hair Salon LUCIA - デモ">
+<meta property="og:description" content="LINE公式アカウント管理ダッシュボードデモ。友だち管理、メッセージ配信、チャット対応、リッチメニュー設定を体験できます。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://portfolio.logence.co.jp/demos/line-connect/">
+<meta property="og:image" content="https://portfolio.logence.co.jp/img/ogp.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="LINE公式アカウント管理 | Hair Salon LUCIA - デモ">
+<meta name="twitter:description" content="LINE公式アカウント管理ダッシュボードデモ。友だち管理、メッセージ配信、チャット対応、リッチメニュー設定を体験できます。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Shippori+Mincho:wght@400;500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --line: #06C755;
+  --line-dark: #05a948;
+  --line-light: #e8f9ee;
+  --line-bg: #7FDBA6;
+
+  --slate-900: #0F172A;
+  --slate-800: #1E293B;
+  --slate-700: #334155;
+  --slate-600: #475569;
+  --slate-500: #64748B;
+  --slate-400: #94A3B8;
+  --slate-300: #CBD5E1;
+  --slate-200: #E2E8F0;
+  --slate-100: #F1F5F9;
+  --slate-50: #F8FAFC;
+  --white: #FFFFFF;
+
+  --green: #22C55E;
+  --green-text: #15803D;
+  --amber: #F59E0B;
+  --amber-text: #A16207;
+  --red: #EF4444;
+  --red-text: #DC2626;
+  --blue: #3B82F6;
+
+  --sidebar-w: 240px;
+  --header-h: 56px;
+  --radius: 8px;
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.12);
+
+  --font-sans: 'Zen Kaku Gothic New', sans-serif;
+  --font-num: 'DM Sans', sans-serif;
+  --font-serif: 'Shippori Mincho', serif;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--slate-50);
+  color: var(--slate-900);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ═══════════ DEMO BANNER ═══════════ */
+.demo-banner {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  background: linear-gradient(135deg, var(--slate-800), var(--slate-900));
+  color: rgba(255,255,255,.85);
+  text-align: center;
+  padding: 6px 16px;
+  font-size: 11px;
+  font-weight: 500;
+  z-index: 9999;
+  letter-spacing: .02em;
+}
+.demo-banner span { opacity: .5; margin: 0 6px; }
+
+/* ═══════════ SIDEBAR ═══════════ */
+.sidebar {
+  position: fixed;
+  top: 28px; left: 0;
+  width: var(--sidebar-w);
+  height: calc(100vh - 28px);
+  background: var(--slate-900);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  transition: transform .3s ease;
+}
+
+.sidebar-brand {
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+
+.sidebar-logo {
+  width: 32px; height: 32px;
+  border-radius: 6px;
+  background: var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sidebar-logo svg { width: 20px; height: 20px; color: var(--white); }
+
+.sidebar-brand-text { display: flex; flex-direction: column; }
+
+.sidebar-brand-name {
+  font-family: var(--font-num);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: .04em;
+}
+
+.sidebar-brand-sub {
+  font-size: 10px;
+  color: rgba(255,255,255,.4);
+  font-weight: 500;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  overflow-y: auto;
+}
+
+.nav-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255,255,255,.25);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 16px 12px 6px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  color: rgba(255,255,255,.5);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .15s ease;
+  position: relative;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+
+.nav-item:hover {
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.85);
+}
+
+.nav-item.active {
+  background: rgba(255,255,255,.08);
+  color: var(--white);
+}
+
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: -8px; top: 50%;
+  transform: translateY(-50%);
+  width: 3px; height: 20px;
+  background: var(--line);
+  border-radius: 0 2px 2px 0;
+}
+
+.nav-item svg {
+  width: 18px; height: 18px;
+  flex-shrink: 0;
+  stroke-width: 1.5;
+}
+
+.nav-badge {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 600;
+  background: var(--line);
+  color: var(--white);
+  padding: 1px 7px;
+  border-radius: 10px;
+  font-family: var(--font-num);
+}
+
+.sidebar-footer {
+  padding: 14px 16px;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+
+.sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sidebar-user-avatar {
+  width: 30px; height: 30px;
+  border-radius: 6px;
+  background: rgba(255,255,255,.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255,255,255,.7);
+  font-family: var(--font-num);
+}
+
+.sidebar-user-info { display: flex; flex-direction: column; }
+
+.sidebar-user-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255,255,255,.8);
+}
+
+.sidebar-user-role {
+  font-size: 11px;
+  color: rgba(255,255,255,.35);
+}
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.5);
+  z-index: 199;
+}
+
+/* ═══════════ LAYOUT ═══════════ */
+.app-layout {
+  margin-left: var(--sidebar-w);
+  min-height: 100vh;
+  padding-top: 28px;
+  transition: margin-left .3s ease;
+}
+
+/* ═══════════ HEADER ═══════════ */
+.header {
+  background: var(--white);
+  border-bottom: 1px solid var(--slate-200);
+  position: sticky;
+  top: 28px;
+  z-index: 100;
+  height: var(--header-h);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: 100%;
+  gap: 16px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hamburger {
+  display: none;
+  width: 34px; height: 34px;
+  border-radius: 6px;
+  border: 1px solid var(--slate-200);
+  background: var(--white);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.hamburger:hover { background: var(--slate-50); }
+.hamburger svg { width: 18px; height: 18px; color: var(--slate-600); }
+
+.page-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--slate-900);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--green-text);
+  background: #f0fdf4;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 500;
+}
+
+.header-status::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--green);
+  border-radius: 50%;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  border: none;
+  transition: all .15s ease;
+}
+
+.btn-primary {
+  background: var(--line);
+  color: var(--white);
+}
+
+.btn-primary:hover { background: var(--line-dark); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--slate-600);
+  border: 1px solid var(--slate-200);
+}
+
+.btn-ghost:hover { background: var(--slate-50); }
+
+.btn svg { width: 16px; height: 16px; }
+
+/* ═══════════ MAIN ═══════════ */
+.main { padding: 24px; }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* ═══════════ CARDS ═══════════ */
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 1px solid var(--slate-200);
+  box-shadow: var(--shadow-sm);
+}
+
+.card-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--slate-100);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--slate-900);
+}
+
+.card-body { padding: 20px; }
+
+/* ═══════════ KPI GRID ═══════════ */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.kpi-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 1px solid var(--slate-200);
+  box-shadow: var(--shadow-sm);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.kpi-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--slate-500);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.kpi-label svg { width: 14px; height: 14px; }
+
+.kpi-value {
+  font-family: var(--font-num);
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--slate-900);
+  line-height: 1.2;
+}
+
+.kpi-change {
+  font-size: 12px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.kpi-change.up { color: var(--green-text); }
+.kpi-change.down { color: var(--red-text); }
+
+.kpi-change svg { width: 12px; height: 12px; }
+
+.kpi-icon {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.kpi-icon svg { width: 18px; height: 18px; }
+
+.kpi-icon.green { background: #f0fdf4; color: var(--green-text); }
+.kpi-icon.amber { background: #fffbeb; color: var(--amber-text); }
+.kpi-icon.blue { background: #eff6ff; color: #2563EB; }
+.kpi-icon.line-green { background: var(--line-light); color: var(--line-dark); }
+
+/* ═══════════ DASHBOARD GRID ═══════════ */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.dashboard-grid .full-width {
+  grid-column: 1 / -1;
+}
+
+/* ═══════════ CHART ═══════════ */
+.chart-wrap {
+  position: relative;
+  height: 260px;
+}
+
+/* ═══════════ TABLE ═══════════ */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--slate-500);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--slate-100);
+  background: var(--slate-50);
+}
+
+.data-table td {
+  padding: 12px;
+  font-size: 13px;
+  border-bottom: 1px solid var(--slate-100);
+  vertical-align: middle;
+}
+
+.data-table tr:last-child td { border-bottom: none; }
+
+.data-table tr:hover td { background: var(--slate-50); }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.badge.sent { background: #f0fdf4; color: var(--green-text); }
+.badge.scheduled { background: #eff6ff; color: #2563EB; }
+.badge.draft { background: #f5f5f5; color: var(--slate-600); }
+
+.rate-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rate-bar-track {
+  width: 60px; height: 4px;
+  background: var(--slate-100);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.rate-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: var(--line);
+}
+
+.rate-bar-value {
+  font-family: var(--font-num);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--slate-700);
+  min-width: 36px;
+}
+
+/* ═══════════ MESSAGE TAB ═══════════ */
+.msg-layout {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 20px;
+}
+
+.template-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.template-card {
+  padding: 16px;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all .15s ease;
+  background: var(--white);
+}
+
+.template-card:hover {
+  border-color: var(--line);
+  box-shadow: 0 0 0 1px var(--line);
+}
+
+.template-card.selected {
+  border-color: var(--line);
+  box-shadow: 0 0 0 2px var(--line);
+  background: var(--line-light);
+}
+
+.template-icon {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  font-size: 18px;
+}
+
+.template-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--slate-900);
+  margin-bottom: 2px;
+}
+
+.template-desc {
+  font-size: 11px;
+  color: var(--slate-500);
+}
+
+/* iPhone Mock */
+.iphone-mock {
+  width: 300px;
+  margin: 0 auto;
+  background: var(--white);
+  border-radius: 32px;
+  border: 3px solid var(--slate-800);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.iphone-notch {
+  height: 28px;
+  background: var(--slate-800);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iphone-notch-inner {
+  width: 80px; height: 16px;
+  background: var(--slate-900);
+  border-radius: 0 0 12px 12px;
+}
+
+.iphone-header {
+  background: var(--line);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--white);
+}
+
+.iphone-header-back { font-size: 18px; opacity: .8; }
+
+.iphone-header-avatar {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.iphone-header-name {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.iphone-chat {
+  background: #8CAAB9;
+  min-height: 320px;
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.line-bubble {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 13px;
+  line-height: 1.5;
+  position: relative;
+}
+
+.line-bubble.store {
+  background: var(--line);
+  color: var(--white);
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+
+.line-bubble.customer {
+  background: var(--white);
+  color: var(--slate-900);
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
+
+.line-bubble-time {
+  font-size: 10px;
+  opacity: .6;
+  margin-top: 4px;
+}
+
+.iphone-bottom {
+  background: #f0f0f0;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.iphone-input {
+  flex: 1;
+  background: var(--white);
+  border: none;
+  border-radius: 20px;
+  padding: 8px 14px;
+  font-size: 13px;
+  color: var(--slate-400);
+}
+
+.iphone-send {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: var(--line);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+}
+
+/* Segment & Schedule */
+.segment-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.segment-chip {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid var(--slate-200);
+  background: var(--white);
+  color: var(--slate-600);
+  cursor: pointer;
+  transition: all .15s ease;
+}
+
+.segment-chip:hover { border-color: var(--line); }
+
+.segment-chip.selected {
+  background: var(--line);
+  color: var(--white);
+  border-color: var(--line);
+}
+
+.schedule-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  align-items: end;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.form-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--slate-600);
+}
+
+.form-input {
+  padding: 8px 12px;
+  border: 1px solid var(--slate-200);
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: var(--font-sans);
+  color: var(--slate-900);
+  background: var(--white);
+  transition: border-color .15s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--line);
+  box-shadow: 0 0 0 2px rgba(6,199,85,.15);
+}
+
+/* ═══════════ CHAT TAB ═══════════ */
+.chat-layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  height: calc(100vh - 28px - var(--header-h) - 48px);
+  gap: 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid var(--slate-200);
+  background: var(--white);
+  box-shadow: var(--shadow-sm);
+}
+
+.chat-list {
+  border-right: 1px solid var(--slate-200);
+  overflow-y: auto;
+  background: var(--white);
+}
+
+.chat-list-header {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--slate-100);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.chat-list-title {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.chat-search {
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  border-bottom: 1px solid var(--slate-100);
+  font-size: 13px;
+  font-family: var(--font-sans);
+  background: var(--slate-50);
+  color: var(--slate-900);
+}
+
+.chat-search::placeholder { color: var(--slate-400); }
+.chat-search:focus { outline: none; background: var(--white); }
+
+.chat-contact {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: background .1s;
+  border-bottom: 1px solid var(--slate-50);
+}
+
+.chat-contact:hover { background: var(--slate-50); }
+.chat-contact.active { background: var(--line-light); }
+
+.chat-avatar {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+  color: var(--white);
+}
+
+.chat-contact-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.chat-contact-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--slate-900);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chat-contact-time {
+  font-size: 10px;
+  color: var(--slate-400);
+  font-weight: 400;
+}
+
+.chat-contact-preview {
+  font-size: 12px;
+  color: var(--slate-500);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chat-unread {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--line);
+  color: var(--white);
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-family: var(--font-num);
+}
+
+/* Chat Main */
+.chat-main {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.chat-main-header {
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--slate-100);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--white);
+}
+
+.chat-main-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.chat-main-name {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.chat-main-tag {
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.chat-main-tag.vip { background: #fef3c7; color: var(--amber-text); }
+.chat-main-tag.repeat { background: #ede9fe; color: #6D28D9; }
+.chat-main-tag.new { background: #dbeafe; color: #1D4ED8; }
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  background: #E8E4DF;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chat-bubble {
+  max-width: 65%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.chat-bubble.store {
+  background: var(--line);
+  color: var(--white);
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+}
+
+.chat-bubble.customer {
+  background: var(--white);
+  color: var(--slate-900);
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
+
+.chat-bubble-meta {
+  font-size: 10px;
+  opacity: .6;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.chat-date-sep {
+  text-align: center;
+  font-size: 11px;
+  color: var(--slate-500);
+  padding: 8px;
+}
+
+.chat-date-sep span {
+  background: rgba(255,255,255,.8);
+  padding: 3px 12px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.chat-input-area {
+  padding: 12px 20px;
+  border-top: 1px solid var(--slate-100);
+  background: var(--white);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ai-suggest {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: linear-gradient(135deg, #f0f7ff, #ece8ff);
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  border: 1px solid rgba(99,102,241,.15);
+  transition: all .15s ease;
+}
+
+.ai-suggest:hover {
+  border-color: rgba(99,102,241,.3);
+  box-shadow: 0 2px 8px rgba(99,102,241,.1);
+}
+
+.ai-suggest-icon {
+  font-size: 14px;
+}
+
+.ai-suggest-label {
+  font-weight: 600;
+  color: #4F46E5;
+  font-size: 11px;
+}
+
+.ai-suggest-text {
+  color: var(--slate-600);
+  flex: 1;
+}
+
+.chat-compose {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chat-compose input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid var(--slate-200);
+  border-radius: 20px;
+  font-size: 13px;
+  font-family: var(--font-sans);
+  color: var(--slate-900);
+}
+
+.chat-compose input:focus {
+  outline: none;
+  border-color: var(--line);
+}
+
+.chat-send-btn {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--line);
+  color: var(--white);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .15s;
+}
+
+.chat-send-btn:hover { background: var(--line-dark); }
+.chat-send-btn svg { width: 16px; height: 16px; }
+
+/* ═══════════ RICH MENU TAB ═══════════ */
+.rich-menu-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.rich-menu-preview {
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 1px solid var(--slate-200);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.rich-menu-phone {
+  max-width: 360px;
+  margin: 24px auto;
+}
+
+.rich-menu-screen {
+  background: #8CAAB9;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 3px solid var(--slate-800);
+}
+
+.rich-menu-chat-area {
+  padding: 20px 12px;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.rich-menu-grid {
+  background: var(--white);
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  border-top: 1px solid var(--slate-200);
+}
+
+.rich-menu-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 16px 8px;
+  border: none;
+  background: var(--white);
+  cursor: pointer;
+  transition: background .1s;
+  border-right: 1px solid var(--slate-100);
+  border-bottom: 1px solid var(--slate-100);
+}
+
+.rich-menu-btn:nth-child(3n) { border-right: none; }
+.rich-menu-btn:nth-child(n+4) { border-bottom: none; }
+
+.rich-menu-btn:hover { background: var(--slate-50); }
+
+.rich-menu-btn-icon {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.rich-menu-btn-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--slate-700);
+}
+
+.rm-setting-card {
+  padding: 14px 16px;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all .15s ease;
+  cursor: pointer;
+  background: var(--white);
+}
+
+.rm-setting-card:hover {
+  border-color: var(--line);
+}
+
+.rm-setting-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.rm-setting-info { flex: 1; }
+
+.rm-setting-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--slate-900);
+}
+
+.rm-setting-desc {
+  font-size: 11px;
+  color: var(--slate-500);
+}
+
+.rm-setting-action {
+  font-size: 12px;
+  color: var(--line);
+  font-weight: 600;
+}
+
+/* ═══════════ RESPONSIVE ═══════════ */
+@media (max-width: 1024px) {
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .dashboard-grid { grid-template-columns: 1fr; }
+  .msg-layout { grid-template-columns: 1fr; }
+  .rich-menu-layout { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-overlay.open { display: block; }
+  .app-layout { margin-left: 0; }
+  .hamburger { display: flex; }
+  .kpi-grid { grid-template-columns: 1fr 1fr; }
+  .chat-layout { grid-template-columns: 1fr; height: auto; }
+  .chat-list { max-height: 200px; }
+  .chat-messages { min-height: 300px; }
+  .template-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 480px) {
+  .kpi-grid { grid-template-columns: 1fr; }
+  .main { padding: 16px; }
+  .header-inner { padding: 0 12px; gap: 8px; }
+  .header-right { gap: 6px; }
+  .header-status { display: none; }
+  .page-title { font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
+  .btn { padding: 6px 10px; font-size: 12px; }
+  .btn svg { width: 14px; height: 14px; }
+  .demo-banner { font-size: 11px; padding: 5px 10px; }
+}
+
+/* ═══════════ ANIMATIONS ═══════════ */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.tab-content.active {
+  animation: fadeIn .25s ease;
+}
+
+/* ═══════════ SCROLLBAR ═══════════ */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--slate-300); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--slate-400); }
+
+/* ═══════════ MISC ═══════════ */
+.text-line { color: var(--line); }
+
+.recent-activity { margin-top: 8px; }
+.recent-activity-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--slate-50);
+}
+.recent-activity-item:last-child { border-bottom: none; }
+
+.recent-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.recent-text {
+  flex: 1;
+  font-size: 13px;
+  color: var(--slate-700);
+}
+
+.recent-time {
+  font-size: 11px;
+  color: var(--slate-400);
+  font-family: var(--font-num);
+}
+</style>
+</head>
+<body>
+
+<!-- Demo Banner -->
+<div class="demo-banner">
+  📋 ポートフォリオ用のデモです <span>|</span> 実際のLINE APIとは接続していません
+  <a href="/" style="color:#E0E7FF;margin-left:8px;text-decoration:underline;text-underline-offset:2px">← ポートフォリオに戻る</a>
+</div>
+
+<!-- Sidebar Overlay (mobile) -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="sidebar-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/></svg>
+    </div>
+    <div class="sidebar-brand-text">
+      <span class="sidebar-brand-name">LINE Connect</span>
+      <span class="sidebar-brand-sub">Hair Salon LUCIA</span>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">メイン</div>
+    <button class="nav-item active" onclick="switchTab('dashboard', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      ダッシュボード
+    </button>
+    <button class="nav-item" onclick="switchTab('message', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      メッセージ配信
+    </button>
+    <button class="nav-item" onclick="switchTab('chat', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      チャット
+      <span class="nav-badge">3</span>
+    </button>
+    <button class="nav-item" onclick="switchTab('richmenu', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="12" y1="3" x2="12" y2="21"/></svg>
+      リッチメニュー
+    </button>
+    <div class="nav-section-label">分析</div>
+    <button class="nav-item" style="opacity:.4; cursor:default;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+      アナリティクス
+    </button>
+    <button class="nav-item" style="opacity:.4; cursor:default;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+      友だち管理
+    </button>
+    <div class="nav-section-label">設定</div>
+    <button class="nav-item" style="opacity:.4; cursor:default;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      設定
+    </button>
+  </nav>
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="sidebar-user-avatar">TM</div>
+      <div class="sidebar-user-info">
+        <div class="sidebar-user-name">田中 美咲</div>
+        <div class="sidebar-user-role">オーナー / 管理者</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- Main Layout -->
+<div class="app-layout">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-left">
+        <button class="hamburger" onclick="toggleSidebar()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <h1 class="page-title" id="pageTitle">ダッシュボード</h1>
+      </div>
+      <div class="header-right">
+        <div class="header-status">Messaging API 接続中</div>
+        <button class="btn btn-ghost">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        </button>
+        <button class="btn btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          新規配信
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <!-- ═══════════ TAB: DASHBOARD ═══════════ -->
+    <div class="tab-content active" id="tab-dashboard">
+      <!-- KPI Cards -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-icon line-green">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+          </div>
+          <span class="kpi-label">友だち数</span>
+          <span class="kpi-value">2,847</span>
+          <span class="kpi-change up">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+            +124 (先月比)
+          </span>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon amber">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          </div>
+          <span class="kpi-label">今月ブロック率</span>
+          <span class="kpi-value">1.2%</span>
+          <span class="kpi-change down">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/></svg>
+            -0.3pt (先月比)
+          </span>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon blue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <span class="kpi-label">メッセージ開封率</span>
+          <span class="kpi-value">68%</span>
+          <span class="kpi-change up">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+            +5.2pt (先月比)
+          </span>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-icon green">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <span class="kpi-label">今月配信数</span>
+          <span class="kpi-value">12<span style="font-size:16px;color:var(--slate-500);font-weight:500">回</span></span>
+          <span class="kpi-change up">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/></svg>
+            +3回 (先月比)
+          </span>
+        </div>
+      </div>
+
+      <div class="dashboard-grid">
+        <!-- Chart -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">友だち数推移</span>
+            <span style="font-size:12px;color:var(--slate-400);">過去6ヶ月</span>
+          </div>
+          <div class="card-body">
+            <div class="chart-wrap">
+              <canvas id="friendsChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">最近のアクティビティ</span>
+          </div>
+          <div class="card-body">
+            <div class="recent-activity">
+              <div class="recent-activity-item">
+                <div class="recent-dot" style="background:var(--line)"></div>
+                <span class="recent-text">新規友だち追加 <strong>+8名</strong></span>
+                <span class="recent-time">2時間前</span>
+              </div>
+              <div class="recent-activity-item">
+                <div class="recent-dot" style="background:var(--blue)"></div>
+                <span class="recent-text">キャンペーン配信「梅雨ケアクーポン」完了</span>
+                <span class="recent-time">5時間前</span>
+              </div>
+              <div class="recent-activity-item">
+                <div class="recent-dot" style="background:var(--amber)"></div>
+                <span class="recent-text">自動応答：予約確認 <strong>3件</strong>処理</span>
+                <span class="recent-time">6時間前</span>
+              </div>
+              <div class="recent-activity-item">
+                <div class="recent-dot" style="background:var(--line)"></div>
+                <span class="recent-text">新規友だち追加 <strong>+5名</strong></span>
+                <span class="recent-time">昨日</span>
+              </div>
+              <div class="recent-activity-item">
+                <div class="recent-dot" style="background:var(--red)"></div>
+                <span class="recent-text">ブロック <strong>2件</strong>（通常範囲内）</span>
+                <span class="recent-time">昨日</span>
+              </div>
+              <div class="recent-activity-item">
+                <div class="recent-dot" style="background:var(--blue)"></div>
+                <span class="recent-text">リッチメニュー更新完了</span>
+                <span class="recent-time">2日前</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Delivery History -->
+        <div class="card full-width">
+          <div class="card-header">
+            <span class="card-title">直近の配信履歴</span>
+            <button class="btn btn-ghost" style="padding:4px 10px;font-size:12px;">すべて表示</button>
+          </div>
+          <div class="card-body" style="padding:0;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>配信タイトル</th>
+                  <th>種類</th>
+                  <th>対象</th>
+                  <th>配信日時</th>
+                  <th>開封率</th>
+                  <th>クリック率</th>
+                  <th>ステータス</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="font-weight:600;">梅雨のヘアケアクーポン 🌧️</td>
+                  <td>キャンペーン</td>
+                  <td style="font-family:var(--font-num)">2,847</td>
+                  <td style="font-family:var(--font-num)">07/10 10:00</td>
+                  <td>
+                    <div class="rate-bar">
+                      <div class="rate-bar-track"><div class="rate-bar-fill" style="width:72%"></div></div>
+                      <span class="rate-bar-value">72%</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="rate-bar">
+                      <div class="rate-bar-track"><div class="rate-bar-fill" style="width:23%"></div></div>
+                      <span class="rate-bar-value">23%</span>
+                    </div>
+                  </td>
+                  <td><span class="badge sent">配信済</span></td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600;">7月の営業時間のお知らせ</td>
+                  <td>お知らせ</td>
+                  <td style="font-family:var(--font-num)">2,847</td>
+                  <td style="font-family:var(--font-num)">07/08 09:00</td>
+                  <td>
+                    <div class="rate-bar">
+                      <div class="rate-bar-track"><div class="rate-bar-fill" style="width:65%"></div></div>
+                      <span class="rate-bar-value">65%</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="rate-bar">
+                      <div class="rate-bar-track"><div class="rate-bar-fill" style="width:8%"></div></div>
+                      <span class="rate-bar-value">8%</span>
+                    </div>
+                  </td>
+                  <td><span class="badge sent">配信済</span></td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600;">リピーター限定トリートメント割引</td>
+                  <td>キャンペーン</td>
+                  <td style="font-family:var(--font-num)">1,203</td>
+                  <td style="font-family:var(--font-num)">07/05 12:00</td>
+                  <td>
+                    <div class="rate-bar">
+                      <div class="rate-bar-track"><div class="rate-bar-fill" style="width:78%"></div></div>
+                      <span class="rate-bar-value">78%</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="rate-bar">
+                      <div class="rate-bar-track"><div class="rate-bar-fill" style="width:31%"></div></div>
+                      <span class="rate-bar-value">31%</span>
+                    </div>
+                  </td>
+                  <td><span class="badge sent">配信済</span></td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600;">夏のカラーキャンペーン 🌻</td>
+                  <td>キャンペーン</td>
+                  <td style="font-family:var(--font-num)">2,847</td>
+                  <td style="font-family:var(--font-num)">07/15 10:00</td>
+                  <td><span style="color:var(--slate-400);font-size:12px;">—</span></td>
+                  <td><span style="color:var(--slate-400);font-size:12px;">—</span></td>
+                  <td><span class="badge scheduled">予約済</span></td>
+                </tr>
+                <tr>
+                  <td style="font-weight:600;">お誕生日おめでとうクーポン</td>
+                  <td>バースデー</td>
+                  <td style="font-family:var(--font-num)">42</td>
+                  <td style="font-family:var(--font-num)">07/01 09:00</td>
+                  <td>
+                    <div class="rate-bar">
+                      <div class="rate-bar-track"><div class="rate-bar-fill" style="width:85%"></div></div>
+                      <span class="rate-bar-value">85%</span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="rate-bar">
+                      <div class="rate-bar-track"><div class="rate-bar-fill" style="width:45%"></div></div>
+                      <span class="rate-bar-value">45%</span>
+                    </div>
+                  </td>
+                  <td><span class="badge sent">配信済</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ TAB: MESSAGE ═══════════ -->
+    <div class="tab-content" id="tab-message">
+      <div class="msg-layout">
+        <!-- Left: Templates & Settings -->
+        <div>
+          <!-- Templates -->
+          <div class="card" style="margin-bottom:20px;">
+            <div class="card-header">
+              <span class="card-title">配信テンプレート</span>
+              <button class="btn btn-ghost" style="padding:4px 10px;font-size:12px;">+ テンプレート作成</button>
+            </div>
+            <div class="card-body">
+              <div class="template-grid">
+                <div class="template-card selected" onclick="selectTemplate(this, 'confirm')">
+                  <div class="template-icon" style="background:#f0fdf4;">📅</div>
+                  <div class="template-name">予約確認</div>
+                  <div class="template-desc">予約内容の自動確認メッセージ</div>
+                </div>
+                <div class="template-card" onclick="selectTemplate(this, 'reminder')">
+                  <div class="template-icon" style="background:#eff6ff;">🔔</div>
+                  <div class="template-name">リマインダー</div>
+                  <div class="template-desc">来店前日のリマインド通知</div>
+                </div>
+                <div class="template-card" onclick="selectTemplate(this, 'campaign')">
+                  <div class="template-icon" style="background:#fef3c7;">🎉</div>
+                  <div class="template-name">キャンペーン</div>
+                  <div class="template-desc">期間限定の割引・特典告知</div>
+                </div>
+                <div class="template-card" onclick="selectTemplate(this, 'thanks')">
+                  <div class="template-icon" style="background:#fce7f3;">💕</div>
+                  <div class="template-name">ご来店お礼</div>
+                  <div class="template-desc">来店後のサンクスメッセージ</div>
+                </div>
+                <div class="template-card" onclick="selectTemplate(this, 'birthday')">
+                  <div class="template-icon" style="background:#ede9fe;">🎂</div>
+                  <div class="template-name">バースデー</div>
+                  <div class="template-desc">誕生月の特別クーポン配信</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Segment -->
+          <div class="card" style="margin-bottom:20px;">
+            <div class="card-header">
+              <span class="card-title">配信セグメント</span>
+            </div>
+            <div class="card-body">
+              <p style="font-size:12px;color:var(--slate-500);margin-bottom:4px;">対象を選択</p>
+              <div class="segment-group">
+                <span class="segment-chip selected" onclick="selectSegment(this)">全員 (2,847)</span>
+                <span class="segment-chip" onclick="selectSegment(this)">新規 (312)</span>
+                <span class="segment-chip" onclick="selectSegment(this)">リピーター (1,856)</span>
+                <span class="segment-chip" onclick="selectSegment(this)">VIP (203)</span>
+                <span class="segment-chip" onclick="selectSegment(this)">休眠 (476)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Schedule -->
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">配信スケジュール</span>
+            </div>
+            <div class="card-body">
+              <div class="schedule-row">
+                <div class="form-group">
+                  <label class="form-label">配信日</label>
+                  <input type="date" class="form-input" value="2025-07-15">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">配信時刻</label>
+                  <input type="time" class="form-input" value="10:00">
+                </div>
+                <button class="btn btn-primary" style="white-space:nowrap;height:38px;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  予約配信
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: iPhone Preview -->
+        <div>
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">配信プレビュー</span>
+              <span style="font-size:11px;color:var(--slate-400);">LINE トーク画面</span>
+            </div>
+            <div class="card-body" style="display:flex;justify-content:center;background:var(--slate-50);border-radius:0 0 var(--radius) var(--radius);">
+              <div class="iphone-mock">
+                <div class="iphone-notch">
+                  <div class="iphone-notch-inner"></div>
+                </div>
+                <div class="iphone-header">
+                  <span class="iphone-header-back">‹</span>
+                  <div class="iphone-header-avatar">L</div>
+                  <span class="iphone-header-name">Hair Salon LUCIA</span>
+                </div>
+                <div class="iphone-chat" id="previewChat">
+                  <div class="line-bubble store">
+                    ご予約ありがとうございます✨<br><br>
+                    📅 7月15日（火）14:00<br>
+                    💇 カット＋カラー<br>
+                    👤 担当：田中<br><br>
+                    変更やキャンセルは前日までにご連絡ください🙏
+                    <div class="line-bubble-time">10:00</div>
+                  </div>
+                  <div class="line-bubble customer">
+                    ありがとうございます！<br>楽しみにしてます😊
+                    <div class="line-bubble-time">10:02</div>
+                  </div>
+                  <div class="line-bubble store">
+                    お待ちしております💕<br>当日はお気をつけてお越しくださいね！
+                    <div class="line-bubble-time">10:03</div>
+                  </div>
+                </div>
+                <div class="iphone-bottom">
+                  <div class="iphone-input">メッセージを入力</div>
+                  <div class="iphone-send">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ TAB: CHAT ═══════════ -->
+    <div class="tab-content" id="tab-chat">
+      <div class="chat-layout">
+        <!-- Contact List -->
+        <div class="chat-list">
+          <div class="chat-list-header">
+            <span class="chat-list-title">トーク一覧</span>
+            <span style="font-size:11px;color:var(--slate-400);font-family:var(--font-num)">8件</span>
+          </div>
+          <input type="text" class="chat-search" placeholder="🔍 名前で検索...">
+
+          <div class="chat-contact active" onclick="selectChat(this, 0)">
+            <div class="chat-avatar" style="background:#E8B4BC">YS</div>
+            <div class="chat-contact-info">
+              <div class="chat-contact-name">山田 さくら <span class="chat-contact-time">10:32</span></div>
+              <div class="chat-contact-preview">来週の予約をお願いしたいのですが…</div>
+            </div>
+            <div class="chat-unread">2</div>
+          </div>
+
+          <div class="chat-contact" onclick="selectChat(this, 1)">
+            <div class="chat-avatar" style="background:#7DAFCB">TK</div>
+            <div class="chat-contact-info">
+              <div class="chat-contact-name">鈴木 恵子 <span class="chat-contact-time">09:15</span></div>
+              <div class="chat-contact-preview">カラーの色味、とても気に入りました！</div>
+            </div>
+          </div>
+
+          <div class="chat-contact" onclick="selectChat(this, 2)">
+            <div class="chat-avatar" style="background:#C4A882">AH</div>
+            <div class="chat-contact-info">
+              <div class="chat-contact-name">佐藤 あかり <span class="chat-contact-time">昨日</span></div>
+              <div class="chat-contact-preview">トリートメントの効果すごいですね</div>
+            </div>
+            <div class="chat-unread">1</div>
+          </div>
+
+          <div class="chat-contact" onclick="selectChat(this, 3)">
+            <div class="chat-avatar" style="background:#8BB5A2">MN</div>
+            <div class="chat-contact-info">
+              <div class="chat-contact-name">松本 菜々子 <span class="chat-contact-time">昨日</span></div>
+              <div class="chat-contact-preview">ありがとうございました！</div>
+            </div>
+          </div>
+
+          <div class="chat-contact" onclick="selectChat(this, 4)">
+            <div class="chat-avatar" style="background:#D4A0C0">RW</div>
+            <div class="chat-contact-info">
+              <div class="chat-contact-name">渡辺 りこ <span class="chat-contact-time">7/8</span></div>
+              <div class="chat-contact-preview">キャンペーンのクーポン使えますか？</div>
+            </div>
+          </div>
+
+          <div class="chat-contact" onclick="selectChat(this, 5)">
+            <div class="chat-avatar" style="background:#A0B5D4">KI</div>
+            <div class="chat-contact-info">
+              <div class="chat-contact-name">井上 かおり <span class="chat-contact-time">7/7</span></div>
+              <div class="chat-contact-preview">次回の予約、確認ありがとうございます</div>
+            </div>
+          </div>
+
+          <div class="chat-contact" onclick="selectChat(this, 6)">
+            <div class="chat-avatar" style="background:#C9B0E0">YT</div>
+            <div class="chat-contact-info">
+              <div class="chat-contact-name">高橋 ゆい <span class="chat-contact-time">7/5</span></div>
+              <div class="chat-contact-preview">バースデークーポンありがとう！</div>
+            </div>
+          </div>
+
+          <div class="chat-contact" onclick="selectChat(this, 7)">
+            <div class="chat-avatar" style="background:#D4C9A0">MK</div>
+            <div class="chat-contact-info">
+              <div class="chat-contact-name">小林 まい <span class="chat-contact-time">7/3</span></div>
+              <div class="chat-contact-preview">了解しました、よろしくお願いします</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat Main -->
+        <div class="chat-main">
+          <div class="chat-main-header">
+            <div class="chat-main-user">
+              <div class="chat-avatar" style="background:#E8B4BC;width:36px;height:36px;font-size:13px;">YS</div>
+              <div>
+                <div class="chat-main-name" id="chatName">山田 さくら</div>
+                <div style="display:flex;gap:4px;margin-top:2px;">
+                  <span class="chat-main-tag vip" id="chatTag">VIP</span>
+                  <span style="font-size:11px;color:var(--slate-400);" id="chatVisit">来店 12回</span>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-ghost" style="padding:6px 10px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                顧客情報
+              </button>
+            </div>
+          </div>
+
+          <div class="chat-messages" id="chatMessages">
+            <div class="chat-date-sep"><span>2025年7月10日</span></div>
+            <div class="chat-bubble customer">
+              こんにちは！来週の火曜日にカットとカラーの予約をお願いしたいのですが、空いていますか？
+              <div class="chat-bubble-meta">10:30</div>
+            </div>
+            <div class="chat-bubble store">
+              山田さま、お問い合わせありがとうございます😊<br>来週火曜日ですね！確認させていただきますね。
+              <div class="chat-bubble-meta">10:31 ✓✓</div>
+            </div>
+            <div class="chat-bubble store">
+              7/15（火）でしたら、14:00〜と16:00〜に空きがございます✨<br>ご都合いかがでしょうか？
+              <div class="chat-bubble-meta">10:32 ✓✓</div>
+            </div>
+            <div class="chat-bubble customer">
+              14時からでお願いします！<br>担当は前回と同じ田中さんでお願いできますか？😊
+              <div class="chat-bubble-meta">10:32</div>
+            </div>
+          </div>
+
+          <div class="chat-input-area">
+            <div class="ai-suggest" onclick="useAiSuggest()">
+              <span class="ai-suggest-icon">✨</span>
+              <span class="ai-suggest-label">AIおすすめ返信</span>
+              <span class="ai-suggest-text">「承知しました！7/15 14:00〜 田中指名でお取りしますね💇‍♀️」</span>
+            </div>
+            <div class="chat-compose">
+              <input type="text" placeholder="メッセージを入力..." id="chatInput">
+              <button class="chat-send-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ TAB: RICH MENU ═══════════ -->
+    <div class="tab-content" id="tab-richmenu">
+      <div class="rich-menu-layout">
+        <!-- Preview -->
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">リッチメニュープレビュー</span>
+            <span class="badge sent">公開中</span>
+          </div>
+          <div class="card-body" style="background:var(--slate-50);">
+            <div class="rich-menu-phone">
+              <div class="rich-menu-screen">
+                <div style="background:var(--line);padding:10px 16px;display:flex;align-items:center;gap:10px;color:white;">
+                  <span style="font-size:16px;">‹</span>
+                  <span style="font-size:14px;font-weight:600;">Hair Salon LUCIA</span>
+                </div>
+                <div class="rich-menu-chat-area">
+                  <div class="line-bubble store" style="font-size:12px;">
+                    いつもご利用ありがとうございます💕<br>下のメニューからご予約いただけます！
+                    <div class="line-bubble-time">10:00</div>
+                  </div>
+                </div>
+                <div class="rich-menu-grid">
+                  <div class="rich-menu-btn">
+                    <div class="rich-menu-btn-icon" style="background:var(--line-light);color:var(--line-dark);">📅</div>
+                    <span class="rich-menu-btn-label">予約する</span>
+                  </div>
+                  <div class="rich-menu-btn">
+                    <div class="rich-menu-btn-icon" style="background:#fef3c7;color:var(--amber-text);">✂️</div>
+                    <span class="rich-menu-btn-label">メニュー</span>
+                  </div>
+                  <div class="rich-menu-btn">
+                    <div class="rich-menu-btn-icon" style="background:#dbeafe;color:#2563EB;">📍</div>
+                    <span class="rich-menu-btn-label">アクセス</span>
+                  </div>
+                  <div class="rich-menu-btn">
+                    <div class="rich-menu-btn-icon" style="background:#fce7f3;color:#DB2777;">🎫</div>
+                    <span class="rich-menu-btn-label">クーポン</span>
+                  </div>
+                  <div class="rich-menu-btn">
+                    <div class="rich-menu-btn-icon" style="background:#ede9fe;color:#7C3AED;">💬</div>
+                    <span class="rich-menu-btn-label">お問い合わせ</span>
+                  </div>
+                  <div class="rich-menu-btn">
+                    <div class="rich-menu-btn-icon" style="background:#fef9c3;color:#CA8A04;">⭐</div>
+                    <span class="rich-menu-btn-label">ポイント</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Settings -->
+        <div>
+          <div class="card" style="margin-bottom:20px;">
+            <div class="card-header">
+              <span class="card-title">ボタン設定</span>
+              <button class="btn btn-ghost" style="padding:4px 10px;font-size:12px;">編集</button>
+            </div>
+            <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
+              <div class="rm-setting-card">
+                <div class="rm-setting-icon" style="background:var(--line-light);">📅</div>
+                <div class="rm-setting-info">
+                  <div class="rm-setting-name">予約する</div>
+                  <div class="rm-setting-desc">外部URL → 予約システムへ遷移</div>
+                </div>
+                <span class="rm-setting-action">URL ›</span>
+              </div>
+              <div class="rm-setting-card">
+                <div class="rm-setting-icon" style="background:#fef3c7;">✂️</div>
+                <div class="rm-setting-info">
+                  <div class="rm-setting-name">メニュー</div>
+                  <div class="rm-setting-desc">メニュー一覧ページを表示</div>
+                </div>
+                <span class="rm-setting-action">URL ›</span>
+              </div>
+              <div class="rm-setting-card">
+                <div class="rm-setting-icon" style="background:#dbeafe;">📍</div>
+                <div class="rm-setting-info">
+                  <div class="rm-setting-name">アクセス</div>
+                  <div class="rm-setting-desc">Google Maps を開く</div>
+                </div>
+                <span class="rm-setting-action">URL ›</span>
+              </div>
+              <div class="rm-setting-card">
+                <div class="rm-setting-icon" style="background:#fce7f3;">🎫</div>
+                <div class="rm-setting-info">
+                  <div class="rm-setting-name">クーポン</div>
+                  <div class="rm-setting-desc">LINE クーポン機能と連携</div>
+                </div>
+                <span class="rm-setting-action">クーポン ›</span>
+              </div>
+              <div class="rm-setting-card">
+                <div class="rm-setting-icon" style="background:#ede9fe;">💬</div>
+                <div class="rm-setting-info">
+                  <div class="rm-setting-name">お問い合わせ</div>
+                  <div class="rm-setting-desc">トーク画面で直接メッセージ</div>
+                </div>
+                <span class="rm-setting-action">テキスト ›</span>
+              </div>
+              <div class="rm-setting-card">
+                <div class="rm-setting-icon" style="background:#fef9c3;">⭐</div>
+                <div class="rm-setting-info">
+                  <div class="rm-setting-name">ポイント</div>
+                  <div class="rm-setting-desc">ショップカード（ポイントカード）</div>
+                </div>
+                <span class="rm-setting-action">カード ›</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">メニュー情報</span>
+            </div>
+            <div class="card-body">
+              <div style="display:flex;flex-direction:column;gap:12px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-size:13px;color:var(--slate-600);">ステータス</span>
+                  <span class="badge sent">公開中</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-size:13px;color:var(--slate-600);">サイズ</span>
+                  <span style="font-size:13px;font-weight:600;">フル（2500×1686）</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-size:13px;color:var(--slate-600);">レイアウト</span>
+                  <span style="font-size:13px;font-weight:600;">3×2 グリッド</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-size:13px;color:var(--slate-600);">最終更新</span>
+                  <span style="font-size:13px;font-weight:600;font-family:var(--font-num);">2025/07/08</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-size:13px;color:var(--slate-600);">タップ数（今月）</span>
+                  <span style="font-size:13px;font-weight:600;font-family:var(--font-num);">1,284回</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+// ═══════════ TAB SWITCHING ═══════════
+const pageTitles = {
+  dashboard: 'ダッシュボード',
+  message: 'メッセージ配信',
+  chat: 'チャット',
+  richmenu: 'リッチメニュー'
+};
+
+function switchTab(tabId, navEl) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('tab-' + tabId).classList.add('active');
+  navEl.classList.add('active');
+  document.getElementById('pageTitle').textContent = pageTitles[tabId] || '';
+  // Close sidebar on mobile
+  if (window.innerWidth <= 768) toggleSidebar();
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('open');
+}
+
+// ═══════════ TEMPLATE SELECTION ═══════════
+const templateMessages = {
+  confirm: {
+    bubbles: [
+      { type: 'store', text: 'ご予約ありがとうございます✨<br><br>📅 7月15日（火）14:00<br>💇 カット＋カラー<br>👤 担当：田中<br><br>変更やキャンセルは前日までにご連絡ください🙏', time: '10:00' },
+      { type: 'customer', text: 'ありがとうございます！<br>楽しみにしてます😊', time: '10:02' },
+      { type: 'store', text: 'お待ちしております💕<br>当日はお気をつけてお越しくださいね！', time: '10:03' }
+    ]
+  },
+  reminder: {
+    bubbles: [
+      { type: 'store', text: '【明日のご予約リマインド】<br><br>山田さま、明日のご予約内容です📋<br><br>📅 7月15日（火）14:00<br>💇 カット＋カラー<br>👤 担当：田中<br><br>お気をつけてお越しください😊', time: '18:00' },
+      { type: 'customer', text: '確認しました！明日よろしくお願いします🙌', time: '18:15' }
+    ]
+  },
+  campaign: {
+    bubbles: [
+      { type: 'store', text: '🌧️ 梅雨のヘアケアキャンペーン 🌧️<br><br>この時期の広がり・うねりに！<br>トリートメントメニューが<br><br>🎉 <strong>全品20%OFF</strong> 🎉<br><br>📅 7/10〜7/31<br>※他クーポンとの併用不可<br><br>ご予約はリッチメニューから✨', time: '10:00' }
+    ]
+  },
+  thanks: {
+    bubbles: [
+      { type: 'store', text: '山田さま✨<br><br>本日はご来店ありがとうございました💕<br>カラーの仕上がりはいかがでしょうか？<br><br>気になる点がございましたら<br>お気軽にご連絡くださいね😊<br><br>次回のご予約もお待ちしております🙏', time: '17:00' },
+      { type: 'customer', text: 'とっても気に入ってます！<br>ありがとうございました😆💕', time: '19:30' }
+    ]
+  },
+  birthday: {
+    bubbles: [
+      { type: 'store', text: '🎂 お誕生日おめでとうございます 🎂<br><br>山田さま、素敵な1年になりますように✨<br><br>ささやかですが、お誕生日クーポンを<br>プレゼントいたします🎁<br><br>💇 カット <strong>30%OFF</strong><br>📅 有効期限：7月末まで<br><br>ご来店お待ちしております💕', time: '09:00' }
+    ]
+  }
+};
+
+function selectTemplate(el, key) {
+  document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  const chat = document.getElementById('previewChat');
+  const tmpl = templateMessages[key];
+  chat.innerHTML = tmpl.bubbles.map(b =>
+    `<div class="line-bubble ${b.type}">${b.text}<div class="line-bubble-time">${b.time}</div></div>`
+  ).join('');
+}
+
+// ═══════════ SEGMENT SELECTION ═══════════
+function selectSegment(el) {
+  document.querySelectorAll('.segment-chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// ═══════════ CHAT DATA ═══════════
+const chatData = [
+  { name: '山田 さくら', tag: 'VIP', tagClass: 'vip', visit: '来店 12回', avatar: 'YS', avatarColor: '#E8B4BC',
+    messages: [
+      { type: 'date', text: '2025年7月10日' },
+      { type: 'customer', text: 'こんにちは！来週の火曜日にカットとカラーの予約をお願いしたいのですが、空いていますか？', time: '10:30' },
+      { type: 'store', text: '山田さま、お問い合わせありがとうございます😊<br>来週火曜日ですね！確認させていただきますね。', time: '10:31' },
+      { type: 'store', text: '7/15（火）でしたら、14:00〜と16:00〜に空きがございます✨<br>ご都合いかがでしょうか？', time: '10:32' },
+      { type: 'customer', text: '14時からでお願いします！<br>担当は前回と同じ田中さんでお願いできますか？😊', time: '10:32' }
+    ],
+    aiSuggest: '承知しました！7/15 14:00〜 田中指名でお取りしますね💇‍♀️'
+  },
+  { name: '鈴木 恵子', tag: 'リピーター', tagClass: 'repeat', visit: '来店 8回', avatar: 'TK', avatarColor: '#7DAFCB',
+    messages: [
+      { type: 'date', text: '2025年7月10日' },
+      { type: 'customer', text: '先日はありがとうございました！カラーの色味、とても気に入りました✨', time: '09:10' },
+      { type: 'store', text: '鈴木さま！嬉しいお言葉ありがとうございます😊<br>アッシュベージュ、とてもお似合いでしたよ💕', time: '09:12' },
+      { type: 'customer', text: '友達にも褒められました！<br>次回も同じ感じでお願いしたいです', time: '09:15' }
+    ],
+    aiSuggest: 'ありがとうございます！次回も同じトーンでご用意しますね✨ ご予約はいつ頃がよろしいですか？'
+  },
+  { name: '佐藤 あかり', tag: '新規', tagClass: 'new', visit: '来店 2回', avatar: 'AH', avatarColor: '#C4A882',
+    messages: [
+      { type: 'date', text: '2025年7月9日' },
+      { type: 'customer', text: 'トリートメントの効果すごいですね！<br>髪がサラサラになりました✨', time: '18:20' },
+      { type: 'store', text: '佐藤さま、ありがとうございます！<br>TOKIOトリートメントは持続力もあるのでおすすめです😊', time: '18:25' },
+      { type: 'customer', text: '次回もトリートメントつけたいです！<br>おすすめのホームケアとかありますか？', time: '18:30' }
+    ],
+    aiSuggest: 'おすすめのホームケア商品をご紹介しますね！TOKIOのホームケアラインが相性◎です🧴✨'
+  },
+  { name: '松本 菜々子', tag: 'リピーター', tagClass: 'repeat', visit: '来店 6回', avatar: 'MN', avatarColor: '#8BB5A2',
+    messages: [
+      { type: 'date', text: '2025年7月9日' },
+      { type: 'store', text: '松本さま、本日はご来店ありがとうございました💕<br>ショートボブ、とてもお似合いでしたよ✨', time: '17:00' },
+      { type: 'customer', text: 'ありがとうございました！<br>スタイリングの仕方も教えてもらえて助かりました😊', time: '19:15' }
+    ],
+    aiSuggest: '嬉しいです！スタイリングで分からないことがあればいつでもご相談くださいね🙌'
+  },
+  { name: '渡辺 りこ', tag: 'VIP', tagClass: 'vip', visit: '来店 15回', avatar: 'RW', avatarColor: '#D4A0C0',
+    messages: [
+      { type: 'date', text: '2025年7月8日' },
+      { type: 'customer', text: 'LINEで届いたキャンペーンのクーポンって、カラーにも使えますか？', time: '14:20' },
+      { type: 'store', text: '渡辺さま、ご質問ありがとうございます！<br>はい、カラーメニューにもご利用いただけます✨', time: '14:25' },
+      { type: 'customer', text: 'やった！じゃあ来週予約します😆', time: '14:28' }
+    ],
+    aiSuggest: 'ぜひお待ちしています！ご都合の良い日時を教えていただければお取りしますね📅'
+  },
+  { name: '井上 かおり', tag: 'リピーター', tagClass: 'repeat', visit: '来店 5回', avatar: 'KI', avatarColor: '#A0B5D4',
+    messages: [
+      { type: 'date', text: '2025年7月7日' },
+      { type: 'store', text: '【ご予約確認】<br>📅 7/12（土）11:00<br>💇 カット<br>👤 担当：佐々木<br><br>ご確認お願いいたします🙏', time: '10:00' },
+      { type: 'customer', text: '確認しました！ありがとうございます😊', time: '12:30' }
+    ],
+    aiSuggest: 'ありがとうございます！当日お待ちしております✨'
+  },
+  { name: '高橋 ゆい', tag: '新規', tagClass: 'new', visit: '来店 1回', avatar: 'YT', avatarColor: '#C9B0E0',
+    messages: [
+      { type: 'date', text: '2025年7月5日' },
+      { type: 'store', text: '🎂 お誕生日おめでとうございます！<br>バースデークーポン（カット30%OFF）をプレゼント🎁<br>有効期限：7月末まで', time: '09:00' },
+      { type: 'customer', text: 'わー！ありがとうございます🥹💕<br>早速使わせていただきます！', time: '10:15' }
+    ],
+    aiSuggest: 'ぜひご利用ください😊 ご予約お待ちしております🎉'
+  },
+  { name: '小林 まい', tag: 'リピーター', tagClass: 'repeat', visit: '来店 4回', avatar: 'MK', avatarColor: '#D4C9A0',
+    messages: [
+      { type: 'date', text: '2025年7月3日' },
+      { type: 'store', text: '小林さま、来月8月の定休日のお知らせです📋<br>8/11（月）〜8/14（木）はお盆休みとなります。<br>ご迷惑をおかけしますが、よろしくお願いいたします🙏', time: '11:00' },
+      { type: 'customer', text: '了解しました、よろしくお願いします😊', time: '13:45' }
+    ],
+    aiSuggest: 'ありがとうございます！お盆前後のご予約も承っておりますのでお気軽にどうぞ✨'
+  }
+];
+
+function selectChat(el, idx) {
+  document.querySelectorAll('.chat-contact').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+
+  const data = chatData[idx];
+  document.getElementById('chatName').textContent = data.name;
+  document.getElementById('chatTag').textContent = data.tag;
+  document.getElementById('chatTag').className = 'chat-main-tag ' + data.tagClass;
+  document.getElementById('chatVisit').textContent = data.visit;
+
+  const msgEl = document.getElementById('chatMessages');
+  msgEl.innerHTML = data.messages.map(m => {
+    if (m.type === 'date') return `<div class="chat-date-sep"><span>${m.text}</span></div>`;
+    const metaText = m.type === 'store' ? m.time + ' ✓✓' : m.time;
+    return `<div class="chat-bubble ${m.type}">${m.text}<div class="chat-bubble-meta">${metaText}</div></div>`;
+  }).join('');
+
+  msgEl.scrollTop = msgEl.scrollHeight;
+
+  // Update AI suggest
+  document.querySelector('.ai-suggest-text').textContent = '「' + data.aiSuggest + '」';
+
+  // Update header avatar
+  const headerAvatar = document.querySelector('.chat-main-user .chat-avatar');
+  headerAvatar.textContent = data.avatar;
+  headerAvatar.style.background = data.avatarColor;
+
+  // Remove unread badge
+  const badge = el.querySelector('.chat-unread');
+  if (badge) badge.remove();
+}
+
+function useAiSuggest() {
+  const suggestText = document.querySelector('.ai-suggest-text').textContent;
+  const cleanText = suggestText.replace(/^「|」$/g, '');
+  document.getElementById('chatInput').value = cleanText;
+  document.getElementById('chatInput').focus();
+}
+
+// ═══════════ CHART ═══════════
+function initChart() {
+  const ctx = document.getElementById('friendsChart');
+  if (!ctx) return;
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['2月', '3月', '4月', '5月', '6月', '7月'],
+      datasets: [{
+        label: '友だち数',
+        data: [2410, 2520, 2590, 2680, 2723, 2847],
+        borderColor: '#06C755',
+        backgroundColor: 'rgba(6,199,85,0.08)',
+        borderWidth: 2.5,
+        fill: true,
+        tension: 0.35,
+        pointBackgroundColor: '#06C755',
+        pointBorderColor: '#fff',
+        pointBorderWidth: 2,
+        pointRadius: 4,
+        pointHoverRadius: 6
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#0F172A',
+          titleFont: { family: "'DM Sans', sans-serif", size: 12 },
+          bodyFont: { family: "'DM Sans', sans-serif", size: 13 },
+          padding: 10,
+          cornerRadius: 6,
+          displayColors: false,
+          callbacks: {
+            label: ctx => ctx.parsed.y.toLocaleString() + '人'
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: {
+            font: { family: "'Zen Kaku Gothic New', sans-serif", size: 12 },
+            color: '#94A3B8'
+          }
+        },
+        y: {
+          min: 2300,
+          grid: { color: 'rgba(0,0,0,0.04)' },
+          ticks: {
+            font: { family: "'DM Sans', sans-serif", size: 12 },
+            color: '#94A3B8',
+            callback: v => v.toLocaleString()
+          }
+        }
+      },
+      interaction: {
+        intersect: false,
+        mode: 'index'
+      }
+    }
+  });
+}
+
+// ═══════════ INIT ═══════════
+document.addEventListener('DOMContentLoaded', () => {
+  initChart();
+  // Hash routing
+  const hash = location.hash.replace('#', '');
+  if (hash && pageTitles[hash]) {
+    const navItems = document.querySelectorAll('.nav-item');
+    const tabMap = ['dashboard', 'message', 'chat', 'richmenu'];
+    const idx = tabMap.indexOf(hash);
+    if (idx >= 0 && navItems[idx]) {
+      switchTab(hash, navItems[idx]);
+    }
+  }
+});
+</script>
+</body>
+</html>

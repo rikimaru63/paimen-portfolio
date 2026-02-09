@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>口コミ・レビュー管理ダッシュボード | Hair Salon LUCIA</title>
+<meta name="description" content="口コミ・レビューの一元管理ダッシュボードデモ。評価分析、感情分析、プラットフォーム横断の口コミ管理を体験できます。">
+<meta property="og:title" content="口コミ・レビュー管理ダッシュボード | Hair Salon LUCIA - デモ">
+<meta property="og:description" content="口コミ・レビューの一元管理ダッシュボードデモ。評価分析、感情分析、プラットフォーム横断の口コミ管理を体験できます。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://portfolio.logence.co.jp/demos/review-dashboard/">
+<meta property="og:image" content="https://portfolio.logence.co.jp/img/ogp.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="口コミ・レビュー管理ダッシュボード | Hair Salon LUCIA - デモ">
+<meta name="twitter:description" content="口コミ・レビューの一元管理ダッシュボードデモ。評価分析、感情分析、プラットフォーム横断の口コミ管理を体験できます。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  /* Semantic colors */
+  --green: #22C55E;
+  --green-text: #15803D;
+  --amber: #F59E0B;
+  --amber-text: #A16207;
+  --red: #EF4444;
+  --red-text: #DC2626;
+  --blue: #3B82F6;
+
+  /* Neutrals */
+  --slate-900: #0F172A;
+  --slate-800: #1E293B;
+  --slate-700: #334155;
+  --slate-600: #475569;
+  --slate-500: #64748B;
+  --slate-400: #94A3B8;
+  --slate-300: #CBD5E1;
+  --slate-200: #E2E8F0;
+  --slate-100: #F1F5F9;
+  --slate-50: #F8FAFC;
+  --white: #FFFFFF;
+
+  /* Layout */
+  --sidebar-w: 240px;
+  --header-h: 56px;
+  --radius: 8px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+
+  /* Fonts */
+  --font-sans: 'Zen Kaku Gothic New', sans-serif;
+  --font-num: 'DM Sans', sans-serif;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--slate-50);
+  color: var(--slate-900);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ═══════════ SIDEBAR ═══════════ */
+.sidebar {
+  position: fixed;
+  top: 0; left: 0;
+  width: var(--sidebar-w);
+  height: 100vh;
+  background: var(--slate-900);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  transition: transform .3s ease;
+}
+
+.sidebar-brand {
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+
+.sidebar-logo {
+  width: 32px; height: 32px;
+  border-radius: 6px;
+  background: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.sidebar-logo svg { width: 18px; height: 18px; color: var(--slate-900); }
+
+.sidebar-brand-name {
+  font-family: var(--font-num);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: .04em;
+}
+
+.sidebar-brand-sub {
+  font-size: 10px;
+  color: rgba(255,255,255,.4);
+  font-weight: 500;
+  letter-spacing: .03em;
+}
+
+.sidebar-nav {
+  flex: 1;
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  overflow-y: auto;
+}
+
+.nav-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255,255,255,.25);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 16px 12px 6px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  color: rgba(255,255,255,.5);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .15s ease;
+  position: relative;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+
+.nav-item:hover {
+  background: rgba(255,255,255,.06);
+  color: rgba(255,255,255,.85);
+}
+
+.nav-item.active {
+  background: rgba(255,255,255,.08);
+  color: var(--white);
+}
+
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: -8px; top: 50%;
+  transform: translateY(-50%);
+  width: 3px; height: 20px;
+  background: var(--blue);
+  border-radius: 0 2px 2px 0;
+}
+
+.nav-item svg {
+  width: 18px; height: 18px;
+  flex-shrink: 0;
+  stroke-width: 1.5;
+}
+
+.nav-badge {
+  margin-left: auto;
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(255,255,255,.12);
+  color: rgba(255,255,255,.7);
+  padding: 1px 7px;
+  border-radius: 4px;
+  font-family: var(--font-num);
+}
+
+.sidebar-footer {
+  padding: 14px 16px;
+  border-top: 1px solid rgba(255,255,255,.06);
+}
+
+.sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.sidebar-user-avatar {
+  width: 30px; height: 30px;
+  border-radius: 6px;
+  background: rgba(255,255,255,.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255,255,255,.7);
+  font-family: var(--font-num);
+}
+
+.sidebar-user-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255,255,255,.8);
+}
+
+.sidebar-user-role {
+  font-size: 11px;
+  color: rgba(255,255,255,.35);
+}
+
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.5);
+  z-index: 199;
+}
+
+/* ═══════════ LAYOUT ═══════════ */
+.app-layout {
+  margin-left: var(--sidebar-w);
+  min-height: 100vh;
+  transition: margin-left .3s ease;
+}
+
+/* ═══════════ HEADER ═══════════ */
+.header {
+  background: var(--white);
+  border-bottom: 1px solid var(--slate-200);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: var(--header-h);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  height: 100%;
+  gap: 16px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.hamburger {
+  display: none;
+  width: 34px; height: 34px;
+  border-radius: 6px;
+  border: 1px solid var(--slate-200);
+  background: var(--white);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.hamburger:hover { background: var(--slate-50); }
+.hamburger svg { width: 18px; height: 18px; color: var(--slate-600); }
+
+.page-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--slate-900);
+  white-space: nowrap;
+}
+
+.header-sep {
+  width: 1px;
+  height: 20px;
+  background: var(--slate-200);
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--slate-400);
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: all .15s;
+}
+
+.back-link:hover { color: var(--blue); }
+.back-link svg { width: 14px; height: 14px; }
+
+.filter-tabs {
+  display: flex;
+  gap: 2px;
+  background: var(--slate-100);
+  border-radius: 6px;
+  padding: 2px;
+}
+
+.filter-tab {
+  padding: 5px 14px;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  color: var(--slate-500);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .15s;
+  font-family: var(--font-sans);
+  white-space: nowrap;
+}
+
+.filter-tab:hover { color: var(--slate-700); }
+
+.filter-tab.active {
+  background: var(--white);
+  color: var(--slate-900);
+  box-shadow: 0 1px 2px rgba(0,0,0,.06);
+  font-weight: 600;
+}
+
+/* ═══════════ MAIN ═══════════ */
+.main { padding: 20px 24px 48px; }
+
+/* Section IDs for scroll navigation */
+section[id] { scroll-margin-top: 68px; }
+
+/* ═══════════ KPI CARDS ═══════════ */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.kpi-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  border: 1px solid var(--slate-200);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow .2s;
+}
+
+.kpi-card:hover { box-shadow: var(--shadow-md); }
+
+.kpi-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.kpi-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--slate-500);
+}
+
+.kpi-label svg {
+  width: 16px; height: 16px;
+  color: var(--slate-400);
+  stroke-width: 1.5;
+}
+
+.kpi-sparkline {
+  width: 64px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.kpi-value {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--slate-900);
+  font-family: var(--font-num);
+  line-height: 1.2;
+}
+
+.kpi-value .unit {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--slate-400);
+  margin-left: 1px;
+}
+
+.kpi-stars {
+  color: var(--amber);
+  font-size: 12px;
+  margin-top: 2px;
+  letter-spacing: .5px;
+}
+
+.kpi-change {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-top: 6px;
+  font-family: var(--font-num);
+  line-height: 1;
+}
+
+.kpi-change.up { color: var(--green-text); }
+.kpi-change.down { color: var(--red-text); }
+
+.kpi-change .arrow { font-size: 13px; }
+.kpi-change .period { color: var(--slate-400); font-weight: 400; margin-left: 4px; }
+
+/* ═══════════ CHART CARDS ═══════════ */
+.chart-grid {
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 20px;
+  border: 1px solid var(--slate-200);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow .2s;
+}
+
+.card:hover { box-shadow: var(--shadow-md); }
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.card-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--slate-900);
+}
+
+.card-subtitle {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--slate-400);
+}
+
+.card-change {
+  font-size: 11px;
+  font-weight: 600;
+  font-family: var(--font-num);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.card-change.up { color: var(--green-text); background: #F0FDF4; }
+.card-change.down { color: var(--red-text); background: #FEF2F2; }
+
+.chart-wrapper { position: relative; width: 100%; }
+.chart-wrapper.h-250 { height: 250px; }
+.chart-wrapper.h-220 { height: 220px; }
+
+/* ═══════════ SENTIMENT SECTION ═══════════ */
+.sentiment-grid {
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.donut-wrapper {
+  max-width: 180px;
+  margin: 0 auto 12px;
+  position: relative;
+}
+
+.donut-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.donut-center .val {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--slate-900);
+  font-family: var(--font-num);
+}
+
+.donut-center .lbl {
+  font-size: 10px;
+  color: var(--slate-400);
+  font-weight: 500;
+}
+
+.legend-row {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  color: var(--slate-600);
+}
+
+.legend-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+}
+
+/* ── Topics ── */
+.topic-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.topic-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  transition: background .15s;
+}
+
+.topic-item:hover { background: var(--slate-50); }
+
+.topic-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--slate-700);
+  min-width: 52px;
+}
+
+.topic-bar-wrap {
+  flex: 1;
+  height: 4px;
+  background: var(--slate-100);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.topic-bar {
+  height: 100%;
+  border-radius: 2px;
+  transition: width .6s ease;
+}
+
+.topic-score {
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font-num);
+  min-width: 36px;
+  text-align: right;
+}
+
+.topic-score.positive { color: var(--green-text); }
+.topic-score.neutral { color: var(--amber-text); }
+.topic-score.negative { color: var(--red-text); }
+
+/* ═══════════ REVIEWS ═══════════ */
+.reviews-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--slate-900);
+}
+
+.review-count {
+  font-size: 12px;
+  color: var(--slate-400);
+  font-weight: 500;
+}
+
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.review-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  border: 1px solid var(--slate-200);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow .2s;
+}
+
+.review-card:hover { box-shadow: var(--shadow-md); }
+
+.review-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.review-avatar {
+  width: 36px; height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--white);
+  flex-shrink: 0;
+}
+
+.review-meta { flex: 1; min-width: 0; }
+
+.review-name {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--slate-900);
+}
+
+.review-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 1px;
+}
+
+.review-stars {
+  color: var(--amber);
+  font-size: 12px;
+  letter-spacing: .5px;
+}
+
+.review-date {
+  font-size: 11px;
+  color: var(--slate-400);
+  font-family: var(--font-num);
+}
+
+.review-source {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: 3px;
+  letter-spacing: .02em;
+}
+
+.review-source.google { background: #EFF6FF; color: #2563EB; }
+.review-source.hotpepper { background: #FFF1F2; color: #E11D48; }
+
+.review-badges { display: flex; gap: 6px; }
+
+.sentiment-tag {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.sentiment-tag.positive { color: var(--green-text); background: #F0FDF4; }
+.sentiment-tag.neutral { color: var(--amber-text); background: #FFFBEB; }
+.sentiment-tag.negative { color: var(--red-text); background: #FEF2F2; }
+
+.review-text {
+  font-size: 13px;
+  color: var(--slate-600);
+  line-height: 1.7;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  padding: 10px 14px;
+  background: var(--slate-50);
+  border-radius: 6px;
+  border-left: 2px solid var(--slate-200);
+}
+
+.review-text.expanded {
+  -webkit-line-clamp: unset;
+  overflow: visible;
+}
+
+.read-more {
+  font-size: 12px;
+  color: var(--blue);
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 4px 0;
+  margin-top: 6px;
+  font-family: var(--font-sans);
+}
+
+.read-more:hover { text-decoration: underline; }
+
+/* ═══════════ FOOTER ═══════════ */
+.demo-footer {
+  text-align: center;
+  padding: 24px 0;
+  border-top: 1px solid var(--slate-200);
+  margin-top: 32px;
+}
+
+.demo-badge {
+  font-size: 11px;
+  color: var(--slate-400);
+}
+
+/* ═══════════ RESPONSIVE ═══════════ */
+@media (max-width: 1024px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .sidebar-overlay.active { display: block; }
+  .app-layout { margin-left: 0; }
+  .hamburger { display: flex; }
+}
+
+@media (max-width: 900px) {
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+  .chart-grid { grid-template-columns: 1fr; }
+  .sentiment-grid { grid-template-columns: 1fr; }
+  .header-inner { padding: 0 16px; }
+  .main { padding: 16px 16px 48px; }
+}
+
+@media (max-width: 520px) {
+  .kpi-grid { gap: 10px; }
+  .kpi-card { padding: 14px 16px; }
+  .kpi-value { font-size: 22px; }
+  .filter-tabs { width: 100%; overflow-x: auto; }
+  .filter-tab { flex: 1; text-align: center; font-size: 11px; padding: 5px 8px; }
+  .card { padding: 16px; }
+  .review-card { padding: 14px 16px; }
+  .header-sep { display: none; }
+  .page-title { font-size: 13px; }
+  .main { padding: 12px 12px 40px; }
+  .header-inner { flex-wrap: wrap; padding: 8px 12px; gap: 8px; }
+  .header-left { min-width: 0; flex: 1; }
+  .back-link { display: none; }
+  .kpi-label { font-size: 11px; word-break: keep-all; white-space: nowrap; }
+  .kpi-sub { font-size: 10px; }
+  .kpi-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Sidebar overlay (mobile) -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<!-- ═══════════ SIDEBAR ═══════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <div class="sidebar-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+        <polyline points="22,6 12,13 2,6"/>
+      </svg>
+    </div>
+    <div>
+      <div class="sidebar-brand-name">LUCIA</div>
+      <div class="sidebar-brand-sub">Review Dashboard</div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">概要</div>
+
+    <button class="nav-item active" data-target="kpi-section" onclick="navTo(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      ダッシュボード
+    </button>
+
+    <button class="nav-item" data-target="chart-section" onclick="navTo(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      分析チャート
+    </button>
+
+    <button class="nav-item" data-target="sentiment-section" onclick="navTo(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+      感情分析
+    </button>
+
+    <div class="nav-section-label">データ</div>
+
+    <button class="nav-item" data-target="reviews-section" onclick="navTo(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      口コミ一覧
+      <span class="nav-badge">12</span>
+    </button>
+
+    <button class="nav-item" data-target="chart-section" onclick="navTo(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      評価トレンド
+    </button>
+
+    <div class="nav-section-label">設定</div>
+
+    <button class="nav-item" onclick="navTo(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+      通知
+    </button>
+
+    <button class="nav-item" onclick="navTo(this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+      設定
+    </button>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="sidebar-user">
+      <div class="sidebar-user-avatar">L</div>
+      <div>
+        <div class="sidebar-user-name">LUCIA 渋谷店</div>
+        <div class="sidebar-user-role">オーナー</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══════════ APP LAYOUT ═══════════ -->
+<div class="app-layout">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-left">
+        <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()" aria-label="メニュー">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <h1 class="page-title">ダッシュボード</h1>
+        <div class="header-sep"></div>
+        <a href="/" class="back-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+          ポートフォリオ
+        </a>
+      </div>
+      <div class="filter-tabs" id="filterTabs">
+        <button class="filter-tab" data-period="7d">7日</button>
+        <button class="filter-tab" data-period="30d">30日</button>
+        <button class="filter-tab active" data-period="90d">90日</button>
+        <button class="filter-tab" data-period="all">全期間</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- KPI Section -->
+    <section id="kpi-section">
+      <div class="kpi-grid">
+
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <div class="kpi-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              平均評価
+            </div>
+            <svg class="kpi-sparkline" id="sparkRating" viewBox="0 0 64 24"></svg>
+          </div>
+          <div class="kpi-value"><span id="kpiRating">0</span></div>
+          <div class="kpi-stars" id="kpiStars">★★★★☆</div>
+          <div class="kpi-change up" id="kpiRatingChange">
+            <span class="arrow">↑</span> +0.1 <span class="period">vs 前月</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <div class="kpi-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              総口コミ数
+            </div>
+            <svg class="kpi-sparkline" id="sparkTotal" viewBox="0 0 64 24"></svg>
+          </div>
+          <div class="kpi-value"><span id="kpiTotal">0</span><span class="unit">件</span></div>
+          <div class="kpi-change up" id="kpiTotalChange">
+            <span class="arrow">↑</span> +47 <span class="period">vs 前月</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <div class="kpi-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              今月の新規
+            </div>
+            <svg class="kpi-sparkline" id="sparkMonthly" viewBox="0 0 64 24"></svg>
+          </div>
+          <div class="kpi-value"><span id="kpiMonthly">0</span><span class="unit">件</span></div>
+          <div class="kpi-change up" id="kpiMonthlyChange">
+            <span class="arrow">↑</span> +12 <span class="period">vs 前月</span>
+          </div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <div class="kpi-label">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 00-3-3l-4 9v11h11.28a2 2 0 002-1.7l1.38-9a2 2 0 00-2-2.3H14z"/><path d="M7 22H4a2 2 0 01-2-2v-7a2 2 0 012-2h3"/></svg>
+              好意的な割合
+            </div>
+            <svg class="kpi-sparkline" id="sparkPositive" viewBox="0 0 64 24"></svg>
+          </div>
+          <div class="kpi-value"><span id="kpiPositive">0</span><span class="unit">%</span></div>
+          <div class="kpi-change up" id="kpiPositiveChange">
+            <span class="arrow">↑</span> +3% <span class="period">vs 前月</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Charts Section -->
+    <section id="chart-section">
+      <div class="chart-grid">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">星評価の分布</div>
+              <div class="card-subtitle">全レビューの評価割合</div>
+            </div>
+          </div>
+          <div class="chart-wrapper h-250">
+            <canvas id="ratingChart"></canvas>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">月ごとの口コミ数</div>
+              <div class="card-subtitle">過去6ヶ月の推移</div>
+            </div>
+            <span class="card-change up" id="trendChange">↑ +12%</span>
+          </div>
+          <div class="chart-wrapper h-250">
+            <canvas id="trendChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sentiment Section -->
+    <section id="sentiment-section">
+      <div class="sentiment-grid">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">感情分析</div>
+              <div class="card-subtitle">口コミの傾向</div>
+            </div>
+          </div>
+          <div class="donut-wrapper">
+            <canvas id="sentimentChart"></canvas>
+            <div class="donut-center">
+              <div class="val" id="sentimentPercent">78%</div>
+              <div class="lbl">好意的</div>
+            </div>
+          </div>
+          <div class="legend-row">
+            <div class="legend-item"><span class="legend-dot" style="background:#22C55E"></span>好意的</div>
+            <div class="legend-item"><span class="legend-dot" style="background:#F59E0B"></span>中立</div>
+            <div class="legend-item"><span class="legend-dot" style="background:#EF4444"></span>改善要望</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">よく言及されるトピック</div>
+              <div class="card-subtitle">キーワード満足度</div>
+            </div>
+          </div>
+          <div class="topic-list" id="topicList"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reviews Section -->
+    <section id="reviews-section">
+      <div class="reviews-header">
+        <div class="section-title">最近の口コミ</div>
+        <div class="review-count" id="reviewCountBadge">全 1,284 件中 5件を表示</div>
+      </div>
+      <div class="reviews-list" id="reviewsList"></div>
+    </section>
+
+    <!-- Footer -->
+    <div class="demo-footer">
+      <div class="demo-badge">デモ版 — モックデータで動作しています</div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ═══════════ SIDEBAR NAVIGATION ═══════════
+function toggleSidebar() {
+  const s = document.getElementById('sidebar');
+  const o = document.getElementById('sidebarOverlay');
+  s.classList.toggle('open');
+  o.classList.toggle('active');
+  document.body.style.overflow = s.classList.contains('open') ? 'hidden' : '';
+}
+
+function navTo(btn) {
+  // Update active state
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  btn.classList.add('active');
+
+  // Scroll to section
+  const target = btn.dataset.target;
+  if (target) {
+    const el = document.getElementById(target);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  // Close mobile sidebar
+  if (window.innerWidth <= 1024) {
+    toggleSidebar();
+  }
+}
+
+// Highlight nav on scroll
+const sections = ['kpi-section', 'chart-section', 'sentiment-section', 'reviews-section'];
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.id;
+      document.querySelectorAll('.nav-item').forEach(n => {
+        n.classList.toggle('active', n.dataset.target === id);
+      });
+    }
+  });
+}, { rootMargin: '-80px 0px -60% 0px', threshold: 0.1 });
+
+document.addEventListener('DOMContentLoaded', () => {
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) observer.observe(el);
+  });
+});
+
+window.addEventListener('resize', () => {
+  if (window.innerWidth > 1024) {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebarOverlay').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+});
+
+// ═══════════ MOCK DATA ═══════════
+const mockData = {
+  '7d': {
+    rating: 4.5, ratingChange: '+0.3', ratingDir: 'up',
+    total: 1284, totalChange: '+15', totalDir: 'up',
+    monthly: 15, monthlyChange: '+5', monthlyDir: 'up',
+    positive: 82, positiveChange: '+4%', positiveDir: 'up',
+    distribution: [58, 24, 10, 5, 3],
+    trend: [18, 22, 15, 20, 17, 15],
+    trendChange: '+8%',
+    sentiment: [82, 12, 6],
+    sparklines: {
+      rating: [4.0, 4.1, 4.2, 4.3, 4.4, 4.5],
+      total: [1240, 1252, 1260, 1268, 1275, 1284],
+      monthly: [8, 10, 12, 11, 13, 15],
+      positive: [76, 78, 79, 80, 81, 82]
+    },
+    topics: [
+      { name: '接客', score: 92, type: 'positive' },
+      { name: '技術', score: 90, type: 'positive' },
+      { name: '雰囲気', score: 88, type: 'positive' },
+      { name: '待ち時間', score: 55, type: 'neutral' },
+      { name: '価格', score: 48, type: 'neutral' },
+    ]
+  },
+  '30d': {
+    rating: 4.3, ratingChange: '+0.2', ratingDir: 'up',
+    total: 1284, totalChange: '+32', totalDir: 'up',
+    monthly: 32, monthlyChange: '+8', monthlyDir: 'up',
+    positive: 80, positiveChange: '+2%', positiveDir: 'up',
+    distribution: [54, 25, 12, 5, 4],
+    trend: [30, 35, 28, 42, 38, 32],
+    trendChange: '+6%',
+    sentiment: [80, 13, 7],
+    sparklines: {
+      rating: [4.0, 4.1, 4.1, 4.2, 4.2, 4.3],
+      total: [1200, 1220, 1240, 1255, 1270, 1284],
+      monthly: [20, 24, 28, 30, 31, 32],
+      positive: [75, 76, 77, 78, 79, 80]
+    },
+    topics: [
+      { name: '接客', score: 90, type: 'positive' },
+      { name: '技術', score: 88, type: 'positive' },
+      { name: '雰囲気', score: 86, type: 'positive' },
+      { name: '待ち時間', score: 52, type: 'neutral' },
+      { name: '価格', score: 45, type: 'neutral' },
+    ]
+  },
+  '90d': {
+    rating: 4.2, ratingChange: '+0.1', ratingDir: 'up',
+    total: 1284, totalChange: '+47', totalDir: 'up',
+    monthly: 47, monthlyChange: '+12', monthlyDir: 'up',
+    positive: 78, positiveChange: '+3%', positiveDir: 'up',
+    distribution: [52, 26, 12, 6, 4],
+    trend: [38, 42, 35, 48, 45, 47],
+    trendChange: '+12%',
+    sentiment: [78, 14, 8],
+    sparklines: {
+      rating: [3.9, 4.0, 4.0, 4.1, 4.1, 4.2],
+      total: [1150, 1180, 1210, 1240, 1265, 1284],
+      monthly: [30, 35, 38, 42, 45, 47],
+      positive: [72, 74, 75, 76, 77, 78]
+    },
+    topics: [
+      { name: '接客', score: 88, type: 'positive' },
+      { name: '技術', score: 86, type: 'positive' },
+      { name: '雰囲気', score: 85, type: 'positive' },
+      { name: '待ち時間', score: 50, type: 'neutral' },
+      { name: '価格', score: 42, type: 'neutral' },
+    ]
+  },
+  'all': {
+    rating: 4.1, ratingChange: '+0.4', ratingDir: 'up',
+    total: 1284, totalChange: '+284', totalDir: 'up',
+    monthly: 47, monthlyChange: '+12', monthlyDir: 'up',
+    positive: 75, positiveChange: '+5%', positiveDir: 'up',
+    distribution: [48, 28, 14, 6, 4],
+    trend: [32, 36, 38, 42, 45, 47],
+    trendChange: '+47%',
+    sentiment: [75, 16, 9],
+    sparklines: {
+      rating: [3.7, 3.8, 3.9, 4.0, 4.0, 4.1],
+      total: [900, 980, 1060, 1140, 1220, 1284],
+      monthly: [25, 30, 35, 40, 44, 47],
+      positive: [68, 70, 72, 73, 74, 75]
+    },
+    topics: [
+      { name: '接客', score: 85, type: 'positive' },
+      { name: '技術', score: 84, type: 'positive' },
+      { name: '雰囲気', score: 82, type: 'positive' },
+      { name: '待ち時間', score: 48, type: 'neutral' },
+      { name: '価格', score: 40, type: 'neutral' },
+    ]
+  }
+};
+
+const reviews = [
+  { name: '田中 美咲', initial: '田', date: '2025-07-10', stars: 5, source: 'google', sentiment: 'positive', color: '#334155', text: '初めて伺いましたが、カウンセリングがとても丁寧でした。髪の悩みをしっかり聞いてくださり、なりたいイメージを一緒に考えてくれました。仕上がりも大満足で、友人にも「どこで切ったの？」と聞かれるほど。次回も絶対リピートします！' },
+  { name: '佐藤 隆介', initial: '佐', date: '2025-07-08', stars: 4, source: 'hotpepper', sentiment: 'positive', color: '#475569', text: '店内の雰囲気がとてもおしゃれで落ち着けます。カットの技術も高くて、いつもイメージ通りに仕上げてもらえます。ただ土日は少し待ち時間が長いので、平日に行くのがおすすめです。' },
+  { name: '鈴木 あやか', initial: '鈴', date: '2025-07-06', stars: 5, source: 'google', sentiment: 'positive', color: '#1E293B', text: 'カラーの色味が本当に綺麗で毎回感動します。髪質改善トリートメントも合わせてお願いしていますが、サラサラが3週間以上続くのが嬉しいです。スタッフの方の対応も明るくて、来店するたびに元気をもらえるサロンです。' },
+  { name: '山田 翔太', initial: '山', date: '2025-07-04', stars: 3, source: 'google', sentiment: 'neutral', color: '#64748B', text: '技術は悪くないと思いますが、予約していたのに20分ほど待たされました。忙しい時期だったのかもしれませんが、もう少しスムーズだと嬉しいです。仕上がり自体は満足しています。' },
+  { name: '高橋 理恵', initial: '高', date: '2025-07-02', stars: 5, source: 'hotpepper', sentiment: 'positive', color: '#334155', text: '3年以上通っています。担当のスタイリストさんが私の髪質を完璧に理解してくれていて、毎回「いい感じ」に仕上げてくれます。ヘッドスパも最高に気持ちよくて、月に一度の自分へのご褒美です。' },
+];
+
+// ═══════════ STATE ═══════════
+let currentPeriod = '90d';
+let ratingChart, trendChart, sentimentChart;
+
+const fontNum = { family: "'DM Sans', sans-serif" };
+const fontJa = { family: "'Zen Kaku Gothic New', sans-serif" };
+
+// ═══════════ SPARKLINES ═══════════
+function renderSparkline(svgId, data, color) {
+  const svg = document.getElementById(svgId);
+  if (!svg) return;
+  const w = 64, h = 24, pad = 2;
+  const min = Math.min(...data), max = Math.max(...data);
+  const range = max - min || 1;
+  const pts = data.map((v, i) => {
+    const x = pad + (i / (data.length - 1)) * (w - pad * 2);
+    const y = h - pad - ((v - min) / range) * (h - pad * 2);
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  });
+  svg.innerHTML = `
+    <defs><linearGradient id="sg-${svgId}" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="${color}" stop-opacity=".15"/>
+      <stop offset="100%" stop-color="${color}" stop-opacity="0"/>
+    </linearGradient></defs>
+    <polygon points="${pad},${h - pad} ${pts.join(' ')} ${w - pad},${h - pad}" fill="url(#sg-${svgId})"/>
+    <polyline points="${pts.join(' ')}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  `;
+}
+
+// ═══════════ KPI ANIMATION ═══════════
+function animateVal(el, end, dur, isFloat) {
+  const start = 0, t0 = performance.now();
+  const step = (ts) => {
+    const p = Math.min((ts - t0) / dur, 1);
+    const e = 1 - Math.pow(1 - p, 3);
+    const v = start + (end - start) * e;
+    el.textContent = isFloat ? v.toFixed(1) : Math.round(v).toLocaleString();
+    if (p < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+function renderStars(r) {
+  const f = Math.floor(r), h = r - f >= .5;
+  return '★'.repeat(f) + (h ? '★' : '') + '☆'.repeat(5 - f - (h ? 1 : 0));
+}
+
+function updateKPIs(d) {
+  animateVal(document.getElementById('kpiRating'), d.rating, 700, true);
+  animateVal(document.getElementById('kpiTotal'), d.total, 700, false);
+  animateVal(document.getElementById('kpiMonthly'), d.monthly, 700, false);
+  animateVal(document.getElementById('kpiPositive'), d.positive, 700, false);
+  document.getElementById('kpiStars').textContent = renderStars(d.rating);
+
+  if (d.sparklines) {
+    renderSparkline('sparkRating', d.sparklines.rating, '#3B82F6');
+    renderSparkline('sparkTotal', d.sparklines.total, '#3B82F6');
+    renderSparkline('sparkMonthly', d.sparklines.monthly, '#3B82F6');
+    renderSparkline('sparkPositive', d.sparklines.positive, '#22C55E');
+  }
+
+  [
+    { id: 'kpiRatingChange', val: d.ratingChange, dir: d.ratingDir },
+    { id: 'kpiTotalChange', val: d.totalChange, dir: d.totalDir },
+    { id: 'kpiMonthlyChange', val: d.monthlyChange, dir: d.monthlyDir },
+    { id: 'kpiPositiveChange', val: d.positiveChange, dir: d.positiveDir },
+  ].forEach(c => {
+    const el = document.getElementById(c.id);
+    el.className = `kpi-change ${c.dir}`;
+    el.innerHTML = `<span class="arrow">${c.dir === 'up' ? '↑' : '↓'}</span> ${c.val} <span class="period">vs 前月</span>`;
+  });
+}
+
+// ═══════════ CHART.JS SHARED CONFIG ═══════════
+const tooltipConfig = {
+  backgroundColor: '#fff',
+  titleColor: '#0F172A',
+  bodyColor: '#475569',
+  borderColor: '#E2E8F0',
+  borderWidth: 1,
+  cornerRadius: 6,
+  padding: { top: 8, bottom: 8, left: 12, right: 12 },
+  titleFont: { ...fontJa, size: 12, weight: '600' },
+  bodyFont: { ...fontNum, size: 12 },
+  displayColors: false,
+  boxPadding: 4,
+  caretSize: 5,
+};
+
+const gridConfig = {
+  color: 'rgba(0,0,0,0.04)',
+  drawBorder: false,
+};
+
+const tickConfig = {
+  font: { ...fontNum, size: 11 },
+  color: '#94A3B8',
+};
+
+// ═══════════ CHARTS ═══════════
+function createRatingChart(data) {
+  const ctx = document.getElementById('ratingChart').getContext('2d');
+  if (ratingChart) ratingChart.destroy();
+
+  // Semantic colors: 5★=strong green, 4=light green, 3=amber, 2=orange, 1=red
+  const barColors = ['#22C55E', '#86EFAC', '#FBBF24', '#FB923C', '#EF4444'];
+
+  ratingChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: ['★ 5', '★ 4', '★ 3', '★ 2', '★ 1'],
+      datasets: [{
+        data: data,
+        backgroundColor: barColors,
+        borderRadius: 2,
+        borderSkipped: false,
+        barThickness: 18,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          ...tooltipConfig,
+          callbacks: { label: c => `${c.raw}%` }
+        }
+      },
+      scales: {
+        x: {
+          max: 100,
+          grid: gridConfig,
+          ticks: { ...tickConfig, callback: v => v + '%' },
+          border: { display: false }
+        },
+        y: {
+          grid: { display: false },
+          ticks: { ...tickConfig, font: { ...fontNum, size: 12, weight: '500' }, color: '#475569' },
+          border: { display: false }
+        }
+      },
+      animation: { duration: 500, easing: 'easeOutQuart' }
+    }
+  });
+}
+
+function createTrendChart(data) {
+  const ctx = document.getElementById('trendChart').getContext('2d');
+  if (trendChart) trendChart.destroy();
+
+  const grad = ctx.createLinearGradient(0, 0, 0, 240);
+  grad.addColorStop(0, 'rgba(59, 130, 246, 0.12)');
+  grad.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
+
+  trendChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: ['2月', '3月', '4月', '5月', '6月', '7月'],
+      datasets: [{
+        label: '口コミ数',
+        data: data,
+        borderColor: '#3B82F6',
+        backgroundColor: grad,
+        fill: true,
+        tension: 0.4,
+        pointRadius: 0,
+        pointHoverRadius: 5,
+        pointHoverBackgroundColor: '#3B82F6',
+        pointHoverBorderColor: '#fff',
+        pointHoverBorderWidth: 2,
+        borderWidth: 2.5,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { intersect: false, mode: 'index' },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          ...tooltipConfig,
+          callbacks: { label: c => `${c.raw} 件` }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { ...tickConfig, font: { ...fontJa, size: 11 } },
+          border: { display: false }
+        },
+        y: {
+          beginAtZero: true,
+          grid: gridConfig,
+          ticks: { ...tickConfig, callback: v => v + '件' },
+          border: { display: false }
+        }
+      },
+      animation: { duration: 500, easing: 'easeOutQuart' }
+    }
+  });
+}
+
+function createSentimentChart(data) {
+  const ctx = document.getElementById('sentimentChart').getContext('2d');
+  if (sentimentChart) sentimentChart.destroy();
+
+  sentimentChart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['好意的', '中立', '改善要望'],
+      datasets: [{
+        data: data,
+        backgroundColor: ['#22C55E', '#FBBF24', '#EF4444'],
+        borderWidth: 0,
+        spacing: 2,
+      }]
+    },
+    options: {
+      responsive: true,
+      cutout: '75%',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          ...tooltipConfig,
+          callbacks: { label: c => `${c.label}: ${c.raw}%` }
+        }
+      },
+      animation: { duration: 500, easing: 'easeOutQuart' }
+    }
+  });
+  document.getElementById('sentimentPercent').textContent = data[0] + '%';
+}
+
+// ═══════════ TOPICS ═══════════
+function renderTopics(topics) {
+  document.getElementById('topicList').innerHTML = topics.map(t => {
+    const barColor = t.type === 'positive' ? '#22C55E' : t.type === 'neutral' ? '#FBBF24' : '#EF4444';
+    return `<div class="topic-item">
+      <span class="topic-name">${t.name}</span>
+      <div class="topic-bar-wrap"><div class="topic-bar" style="width:${t.score}%;background:${barColor}"></div></div>
+      <span class="topic-score ${t.type}">${t.score}%</span>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════ REVIEWS ═══════════
+function renderReviews() {
+  document.getElementById('reviewsList').innerHTML = reviews.map((r, i) => `
+    <div class="review-card">
+      <div class="review-top">
+        <div class="review-avatar" style="background:${r.color}">${r.initial}</div>
+        <div class="review-meta">
+          <div class="review-name">${r.name}</div>
+          <div class="review-info">
+            <span class="review-stars">${'★'.repeat(r.stars)}${'☆'.repeat(5 - r.stars)}</span>
+            <span class="review-date">${r.date}</span>
+            <span class="review-source ${r.source}">${r.source === 'google' ? 'Google' : 'ホットペッパー'}</span>
+          </div>
+        </div>
+        <div class="review-badges">
+          <span class="sentiment-tag ${r.sentiment}">${r.sentiment === 'positive' ? '好意的' : r.sentiment === 'neutral' ? '中立' : '改善要望'}</span>
+        </div>
+      </div>
+      <div class="review-text" id="rt${i}">${r.text}</div>
+      <button class="read-more" onclick="toggleReview(${i})">続きを読む</button>
+    </div>
+  `).join('');
+}
+
+function toggleReview(i) {
+  const el = document.getElementById(`rt${i}`);
+  const btn = el.nextElementSibling;
+  const exp = el.classList.toggle('expanded');
+  btn.textContent = exp ? '閉じる' : '続きを読む';
+}
+
+// ═══════════ FILTER TABS ═══════════
+document.getElementById('filterTabs').addEventListener('click', e => {
+  if (!e.target.classList.contains('filter-tab')) return;
+  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  e.target.classList.add('active');
+  currentPeriod = e.target.dataset.period;
+  updateDashboard(mockData[currentPeriod]);
+});
+
+function updateDashboard(d) {
+  updateKPIs(d);
+  createRatingChart(d.distribution);
+  createTrendChart(d.trend);
+  createSentimentChart(d.sentiment);
+  renderTopics(d.topics);
+  const tc = document.getElementById('trendChange');
+  if (tc) { tc.textContent = `↑ ${d.trendChange}`; }
+}
+
+// ═══════════ INIT ═══════════
+document.addEventListener('DOMContentLoaded', () => {
+  updateDashboard(mockData[currentPeriod]);
+  renderReviews();
+});
+</script>
+</body>
+</html>

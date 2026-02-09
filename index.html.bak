@@ -1,0 +1,1520 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#0b0b0c" />
+  <title>Ando. | Web Developer & AI Engineer</title>
+  <meta name="description" content="フリーランスエンジニア あんどうのポートフォリオ。Next.js / React / TypeScript を軸に、AI活用の開発も対応。" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+JP:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind (CDN OK / minimal usage) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    :root{
+      --bg:#0b0b0c;
+      --panel:#101113;
+      --text:#f4f5f7;
+      --muted:rgba(244,245,247,.72);
+      --faint:rgba(244,245,247,.12);
+      --accent:#58c7ff;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
+      font-family: Inter, "Noto Sans JP", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: geometricPrecision;
+      letter-spacing: .01em;
+    }
+
+    a{ color:inherit; text-decoration:none; }
+
+    .wrap{
+      width: min(1120px, calc(100% - 48px));
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .topbar{
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 50;
+      padding: 18px 0;
+      background: linear-gradient(to bottom, rgba(11,11,12,.78), rgba(11,11,12,0));
+      pointer-events: none;
+    }
+    .topbar .inner{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 18px;
+      pointer-events: auto;
+    }
+    .brand{
+      display:flex;
+      align-items: baseline;
+      gap: 10px;
+      font-weight: 600;
+      letter-spacing: .02em;
+    }
+    .brand .dot{
+      width: 6px;
+      height: 6px;
+      border-radius: 99px;
+      background: var(--accent);
+      transform: translateY(-6px);
+    }
+    .nav{
+      display:flex;
+      gap: 18px;
+      align-items:center;
+      font-size: 12px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .nav a{
+      position: relative;
+      padding: 8px 0;
+      transition: color .25s ease;
+    }
+    .nav a::after{
+      content:"";
+      position:absolute;
+      left:0;
+      right:auto;
+      bottom: 2px;
+      width: 0;
+      height: 1px;
+      background: var(--accent);
+      opacity: .95;
+      transition: width .25s ease;
+    }
+    .nav a:hover{ color: var(--text); }
+    .nav a:hover::after{ width: 100%; }
+
+    /* Hero */
+    .hero{
+      min-height: 100svh;
+      padding: 140px 0 110px;
+      display:flex;
+      align-items:flex-end;
+    }
+    .hero-grid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 64px;
+      align-items:end;
+    }
+    .name{
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: .9;
+      font-size: clamp(64px, 9vw, 168px);
+      margin: 0;
+    }
+    .role{
+      margin-top: 18px;
+      font-size: 13px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .intro{
+      margin-top: 18px;
+      max-width: 52ch;
+      font-size: 15px;
+      line-height: 1.9;
+      color: var(--muted);
+    }
+    .hero-aside{
+      padding-bottom: 12px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.9;
+    }
+    .hero-aside .label{
+      display:inline-block;
+      margin-bottom: 10px;
+      color: rgba(244,245,247,.48);
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      font-size: 11px;
+    }
+    .accentline{
+      height: 1px;
+      width: 100%;
+      background: linear-gradient(to right, var(--faint), transparent);
+      margin: 10px 0 16px;
+    }
+    .scrollcue{
+      margin-top: 18px;
+      width: 10px;
+      height: 72px;
+      position: relative;
+      opacity: .9;
+    }
+    .scrollcue::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: rgba(244,245,247,.12);
+      border-radius: 99px;
+    }
+    .scrollcue::after{
+      content:"";
+      position:absolute;
+      left: 50%;
+      top: 10px;
+      width: 2px;
+      height: 18px;
+      background: var(--accent);
+      transform: translateX(-50%);
+      border-radius: 99px;
+      animation: drop 1.6s ease-in-out infinite;
+      will-change: transform, opacity;
+    }
+    @keyframes drop{
+      0%{ transform: translate(-50%, 0); opacity: .9; }
+      70%{ transform: translate(-50%, 34px); opacity: .15; }
+      100%{ transform: translate(-50%, 34px); opacity: 0; }
+    }
+
+    /* Sections */
+    section{
+      padding: 120px 0;
+    }
+    .section-head{
+      display:flex;
+      align-items:flex-end;
+      gap: 20px;
+      margin-bottom: 46px;
+    }
+    .kicker{
+      font-size: 11px;
+      letter-spacing: .26em;
+      text-transform: uppercase;
+      color: rgba(244,245,247,.5);
+      min-width: 72px;
+    }
+    .line{
+      height: 1px;
+      flex: 1;
+      background: linear-gradient(to right, var(--faint), transparent);
+      transform: translateY(-6px);
+    }
+    .section-title{
+      margin:0;
+      font-size: clamp(28px, 3.6vw, 54px);
+      font-weight: 650;
+      letter-spacing: -0.02em;
+      line-height: 1.05;
+    }
+
+    .prose{
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 2;
+      max-width: 68ch;
+    }
+
+    /* Asymmetric blocks */
+    .offset{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 44px;
+      align-items:start;
+    }
+    .offset .prose{
+      grid-column: 1 / span 1;
+      margin-left: clamp(0px, 4vw, 44px);
+    }
+    .note{
+      grid-column: 2 / span 1;
+      margin-top: 14px;
+      padding-left: 18px;
+      border-left: 1px solid var(--faint);
+      color: rgba(244,245,247,.55);
+      font-size: 12px;
+      line-height: 1.9;
+    }
+    .note strong{
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* Skills */
+    .skills{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 46px;
+      align-items:start;
+    }
+    .skills .block{
+      padding: 26px 0;
+      border-top: 1px solid var(--faint);
+    }
+    .skills .block:last-child{
+      border-bottom: 1px solid var(--faint);
+    }
+    .skills .tagline{
+      font-size: 12px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      color: rgba(244,245,247,.48);
+      margin-bottom: 10px;
+    }
+    .skills .items{
+      font-size: 15px;
+      line-height: 2;
+      color: var(--muted);
+    }
+    .skills .items b{
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    /* Works */
+    .works{
+      display:flex;
+      flex-direction: column;
+      gap: 54px;
+    }
+    .work{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 38px;
+      align-items:center;
+    }
+    .work:nth-child(2){
+      grid-template-columns: .85fr 1.15fr;
+    }
+    .work:nth-child(2) .work-meta{ order: 2; }
+    .work:nth-child(2) .mock{ order: 1; }
+
+    .work-meta h3{
+      margin: 0 0 10px;
+      font-size: 22px;
+      font-weight: 650;
+      letter-spacing: -0.01em;
+    }
+    .work-meta p{
+      margin: 0 0 18px;
+      color: var(--muted);
+      line-height: 1.9;
+      font-size: 14px;
+      max-width: 46ch;
+    }
+
+    .work-meta .go{
+      display:inline-flex;
+      align-items:center;
+      gap: 10px;
+      font-size: 12px;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: rgba(244,245,247,.78);
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(244,245,247,.14);
+      transition: border-color .25s ease, color .25s ease;
+    }
+    .work-meta .go .mark{
+      width: 10px;
+      height: 10px;
+      border: 1px solid rgba(244,245,247,.35);
+      transform: rotate(45deg);
+      transition: border-color .25s ease, transform .25s ease;
+    }
+    .work-meta .go:hover{
+      color: var(--text);
+      border-color: rgba(88,199,255,.6);
+    }
+    .work-meta .go:hover .mark{
+      border-color: rgba(88,199,255,.9);
+      transform: rotate(45deg) translate(2px,-2px);
+    }
+
+    /* Browser mock */
+    .mock{
+      border: 1px solid rgba(244,245,247,.14);
+      background: rgba(16,17,19,.72);
+      border-radius: 14px;
+      overflow:hidden;
+      transform: translateZ(0);
+      will-change: transform;
+      transition: transform .3s ease, border-color .3s ease;
+    }
+    a.worklink:hover .mock{
+      transform: translateY(-6px);
+      border-color: rgba(88,199,255,.45);
+    }
+    .mock-top{
+      height: 36px;
+      display:flex;
+      align-items:center;
+      padding: 0 12px;
+      gap: 8px;
+      border-bottom: 1px solid rgba(244,245,247,.12);
+      background: rgba(16,17,19,.85);
+    }
+    .dotbtn{ width: 9px; height: 9px; border-radius: 99px; background: rgba(244,245,247,.18); }
+    .url{
+      margin-left: 8px;
+      font-size: 11px;
+      color: rgba(244,245,247,.5);
+      letter-spacing: .06em;
+      white-space: nowrap;
+      overflow:hidden;
+      text-overflow: ellipsis;
+    }
+
+    .screen{
+      aspect-ratio: 16/10;
+      position: relative;
+      background: #0f1113;
+      overflow: hidden;
+    }
+    .screen-img{
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+      display: block;
+    }
+
+    /* Preview “layouts” (CSS-only) */
+    .preview{
+      position:absolute;
+      inset: 14px;
+      border: 1px solid rgba(244,245,247,.12);
+      background: rgba(11,11,12,.55);
+      border-radius: 10px;
+      overflow:hidden;
+    }
+    .preview .bar{
+      height: 14px;
+      background: rgba(244,245,247,.08);
+    }
+    .preview .hero{
+      min-height: auto;
+      padding: 18px 18px 16px;
+      display:block;
+    }
+    .preview .brandname{
+      font-weight: 650;
+      letter-spacing: -0.02em;
+      font-size: clamp(16px, 2.2vw, 24px);
+      margin: 0 0 10px;
+    }
+    .preview .subline{
+      height: 10px;
+      width: 62%;
+      background: rgba(244,245,247,.12);
+      border-radius: 99px;
+      margin-bottom: 10px;
+    }
+    .preview .subline:nth-child(3){ width: 46%; opacity: .85; }
+    .preview .grid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 12px;
+      padding: 0 18px 18px;
+    }
+    .preview .card{
+      border: 1px solid rgba(244,245,247,.1);
+      background: rgba(244,245,247,.05);
+      border-radius: 10px;
+      height: 56px;
+    }
+    .preview .card.tall{ height: 124px; }
+
+    .brand-accent{
+      position:absolute;
+      right: 16px;
+      top: 16px;
+      width: 12px;
+      height: 12px;
+      border-radius: 99px;
+      background: rgba(88,199,255,.85);
+      box-shadow: 0 0 0 10px rgba(88,199,255,.08);
+    }
+
+    /* Per project tweaks (still within 3-color vibe) */
+    .p-seitai .preview{ background: rgba(88,199,255,.06); }
+    .p-seitai .brandname{ letter-spacing: .01em; }
+    .p-cafe .preview{ background: rgba(244,245,247,.04); }
+    .p-cafe .brand-accent{ opacity: .7; }
+    .p-gym .preview{ background: rgba(88,199,255,.04); }
+    .p-gym .brandname{ text-transform: uppercase; letter-spacing: .06em; }
+
+    /* Contact */
+    .contact{
+      padding: 140px 0 120px;
+    }
+    .cta{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      text-align: center;
+    }
+    .cta .small{
+      color: rgba(244,245,247,.55);
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      font-size: 11px;
+    }
+    .cta .mail{
+      font-size: clamp(26px, 4.4vw, 54px);
+      font-weight: 650;
+      letter-spacing: -0.02em;
+      line-height: 1.06;
+      display:inline-block;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(244,245,247,.14);
+      transition: border-color .25s ease, color .25s ease;
+    }
+    .cta .mail:hover{
+      border-color: rgba(88,199,255,.7);
+    }
+
+    footer{
+      padding: 40px 0 56px;
+      color: rgba(244,245,247,.45);
+      font-size: 12px;
+      letter-spacing: .02em;
+    }
+
+    /* Reveal animation */
+    .reveal{ opacity:0; transform: translateY(18px); }
+    .reveal.is-in{ opacity:1; transform: translateY(0); transition: opacity .7s ease, transform .7s ease; }
+
+    /* Responsive */
+    @media (max-width: 920px){
+      .hero-grid{ grid-template-columns: 1fr; gap: 28px; }
+      .hero{ align-items: flex-start; padding: 132px 0 92px; }
+      .offset{ grid-template-columns: 1fr; }
+      .offset .prose{ margin-left: 0; }
+      .note{ grid-column: auto; padding-left: 0; border-left: 0; border-top: 1px solid var(--faint); padding-top: 18px; }
+      .skills{ grid-template-columns: 1fr; gap: 28px; }
+      .work, .work:nth-child(2){ grid-template-columns: 1fr; }
+      .work:nth-child(2) .work-meta, .work:nth-child(2) .mock{ order: unset; }
+    }
+    @media (max-width: 520px){
+      .wrap{ width: min(1120px, calc(100% - 32px)); }
+      section{ padding: 92px 0; }
+      .nav{ gap: 14px; }
+      .nav a{ font-size: 11px; }
+      .kicker{ min-width: 64px; }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .scrollcue::after{ animation: none; }
+      .reveal, .reveal.is-in{ transition: none; transform: none; opacity: 1; }
+    }
+
+    /* AI Solutions */
+    .ai-subtitle{
+      margin-top: 18px;
+      font-size: 15px;
+      line-height: 1.8;
+      color: var(--muted);
+      max-width: 64ch;
+    }
+    
+    .bots-grid{
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      margin-top: 48px;
+    }
+    
+    .bot-card{
+      background: var(--panel);
+      border: 1px solid var(--faint);
+      border-radius: 16px;
+      padding: 28px;
+      transition: all .25s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .bot-card:hover{
+      border-color: rgba(88,199,255,.3);
+      transform: translateY(-4px);
+    }
+    
+    .bot-card::before{
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+      opacity: 0;
+      transition: opacity .25s ease;
+    }
+    
+    .bot-card:hover::before{
+      opacity: 1;
+    }
+    
+    .bot-icon{
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      width: 48px;
+      height: 48px;
+      color: var(--accent);
+    }
+    .bot-icon svg{
+      width: 100%;
+      height: 100%;
+    }
+    
+    .bot-name{
+      margin: 0 0 12px;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    
+    .bot-desc{
+      margin: 0 0 24px;
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+    
+    .try-btn{
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      padding: 8px 0;
+      border-bottom: 1px solid transparent;
+      transition: all .25s ease;
+    }
+    
+    .try-btn:hover{
+      border-color: var(--accent);
+    }
+    
+    .try-btn .arrow{
+      width: 8px;
+      height: 8px;
+      border: 1px solid currentColor;
+      border-left: 0;
+      border-bottom: 0;
+      transform: rotate(45deg);
+      transition: transform .25s ease;
+    }
+    
+    .try-btn:hover .arrow{
+      transform: rotate(45deg) translate(2px, -2px);
+    }
+    
+    /* Chat Modal */
+    .chat-overlay{
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.85);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    .chat-overlay.active{
+      display: flex;
+    }
+    
+    .chat-modal{
+      background: var(--panel);
+      border: 1px solid var(--faint);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 480px;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    
+    .chat-header{
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--faint);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .chat-title{
+      font-size: 16px;
+      font-weight: 600;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .close-btn{
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 24px;
+      cursor: pointer;
+      padding: 4px;
+      transition: color .25s ease;
+    }
+    
+    .close-btn:hover{
+      color: var(--text);
+    }
+    
+    .chat-messages{
+      flex: 1;
+      padding: 20px;
+      overflow-y: auto;
+      min-height: 300px;
+      max-height: 400px;
+    }
+    
+    .message{
+      margin-bottom: 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    
+    .message.user{
+      flex-direction: row-reverse;
+    }
+    
+    .message-bubble{
+      background: var(--faint);
+      padding: 12px 16px;
+      border-radius: 16px;
+      max-width: 80%;
+      font-size: 14px;
+      line-height: 1.6;
+      word-wrap: break-word;
+    }
+    
+    .message.user .message-bubble{
+      background: var(--accent);
+      color: var(--bg);
+    }
+    
+    .message-avatar{
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--faint);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
+      color: var(--accent);
+    }
+    .message-avatar svg{
+      width: 18px;
+      height: 18px;
+    }
+    
+    .message.user .message-avatar{
+      background: var(--accent);
+      color: var(--bg);
+    }
+    
+    .chat-input-area{
+      padding: 20px;
+      border-top: 1px solid var(--faint);
+      display: flex;
+      gap: 12px;
+    }
+    
+    .chat-input{
+      flex: 1;
+      background: var(--bg);
+      border: 1px solid var(--faint);
+      border-radius: 12px;
+      padding: 12px 16px;
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+      transition: border-color .25s ease;
+    }
+    
+    .chat-input:focus{
+      border-color: var(--accent);
+    }
+    
+    .send-btn{
+      background: var(--accent);
+      border: none;
+      border-radius: 12px;
+      padding: 12px 16px;
+      color: var(--bg);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity .25s ease;
+      min-width: 60px;
+    }
+    
+    .send-btn:disabled{
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    
+    .typing-indicator{
+      display: none;
+      color: var(--muted);
+      font-style: italic;
+      font-size: 14px;
+      padding: 8px 16px;
+    }
+    
+    .typing-indicator.active{
+      display: block;
+    }
+    
+    .chat-title svg{
+      width: 24px;
+      height: 24px;
+      color: var(--accent);
+    }
+    
+    .suggestions{
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 4px 0 16px 44px;
+    }
+    .suggestion-btn{
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: var(--muted);
+      font-size: 13px;
+      padding: 8px 16px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all .25s ease;
+      font-family: inherit;
+    }
+    .suggestion-btn:hover{
+      background: rgba(255,255,255,0.14);
+      color: var(--text);
+      border-color: rgba(88,199,255,.35);
+    }
+    
+    /* Mobile responsive for AI section */
+    @media (max-width: 920px){
+      .bots-grid{
+        grid-template-columns: 1fr;
+        gap: 24px;
+      }
+      
+      .chat-modal{
+        margin: 0 16px;
+        max-height: 90vh;
+      }
+    }
+
+    /* Demo Systems */
+    .demo-subtitle{
+      margin-top: 18px;
+      font-size: 15px;
+      line-height: 1.8;
+      color: var(--muted);
+      max-width: 64ch;
+    }
+
+    .demo-grid{
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 28px;
+      margin-top: 48px;
+    }
+
+    .demo-card{
+      background: var(--panel);
+      border: 1px solid var(--faint);
+      border-left: 4px solid var(--demo-accent, var(--accent));
+      border-radius: 12px;
+      padding: 28px 28px 24px;
+      transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .demo-card:hover{
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0,0,0,.35);
+      border-color: rgba(244,245,247,.22);
+      border-left-color: var(--demo-accent, var(--accent));
+    }
+
+    .demo-card-header{
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .demo-icon{
+      width: 40px;
+      height: 40px;
+      flex-shrink: 0;
+      color: var(--demo-accent, var(--accent));
+    }
+    .demo-icon svg{
+      width: 100%;
+      height: 100%;
+    }
+
+    .demo-name{
+      margin: 0;
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+
+    .demo-desc{
+      margin: 0 0 22px;
+      font-size: 14px;
+      line-height: 1.75;
+      color: var(--muted);
+      flex: 1;
+    }
+
+    .demo-link{
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--demo-accent, var(--accent));
+      transition: gap .25s ease;
+    }
+    .demo-link:hover{
+      gap: 10px;
+    }
+
+    @media (max-width: 920px){
+      .demo-grid{
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar" aria-label="Site header">
+    <div class="wrap inner">
+      <a class="brand" href="#top" aria-label="Go to top">
+        <span>Ando</span><span class="dot" aria-hidden="true"></span>
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="#about">About</a>
+        <a href="#skills">Skills</a>
+        <a href="#works">Works</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <!-- HERO -->
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div class="reveal">
+          <h1 class="name">Ando<span style="color:var(--accent)">.</span></h1>
+          <div class="role">Web Developer &amp; AI Engineer</div>
+          <p class="intro">
+            Next.js / React / TypeScript でWebアプリを作ってるフリーランスです。
+            AIを使った開発もやってます。
+          </p>
+        </div>
+
+        <aside class="hero-aside reveal" aria-label="Quick note">
+          <span class="label">Now available</span>
+          <div class="accentline" aria-hidden="true"></div>
+          <div>
+            少人数チームや個人事業主の方と直接やりとりしながら作るのが好きです。<br />
+            話を聞いて、作って、出すところまで全部やります。
+          </div>
+          <div class="scrollcue" aria-hidden="true"></div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div class="kicker">01 / About</div>
+          <div class="line" aria-hidden="true"></div>
+          <h2 class="section-title">自己紹介</h2>
+        </div>
+
+        <div class="offset">
+          <p class="prose reveal">
+            フリーランスでWebアプリやサイトを作っています。
+            普段はNext.jsとReactを使っていて、最近はClaude CodeなどAIを活用した開発が多いです。<br /><br />
+            ECサイト、業務アプリ、LP制作などの実績があります。
+            「とりあえず動くもの」で終わらせず、ちゃんと使えるところまで持っていくのが自分のやり方です。
+          </p>
+
+          <div class="note reveal">
+            <strong>仕事の進め方</strong><br />
+            まずヒアリングして、小さく作って、フィードバックもらって直す。<br />
+            その繰り返しで形にしていきます。
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div class="kicker">02 / Skills</div>
+          <div class="line" aria-hidden="true"></div>
+          <h2 class="section-title">使ってる技術</h2>
+        </div>
+
+        <div class="skills">
+          <div>
+            <div class="block reveal">
+              <div class="tagline">Frontend</div>
+              <div class="items">
+                <b>Next.js</b> / React / TypeScript / Tailwind CSS<br />
+                UI設計 / コンポーネント設計 / パフォーマンス改善
+              </div>
+            </div>
+
+            <div class="block reveal">
+              <div class="tagline">Platform</div>
+              <div class="items">
+                Vercel / Node.js / API設計 / 運用を見据えたログ設計
+              </div>
+            </div>
+
+            <div class="block reveal">
+              <div class="tagline">AI Integration</div>
+              <div class="items">
+                Claude / GPT / RAG構築（ベクトル検索） / Python
+              </div>
+            </div>
+          </div>
+
+          <div class="note reveal" style="margin-top: 6px;">
+            <strong>よくやる仕事</strong><br />
+            Webアプリの新規開発、既存サービスへのAI機能追加、
+            LP・HPの制作。作って終わりじゃなく、改善まで付き合います。
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORKS -->
+    <section id="works">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div class="kicker">03 / Works</div>
+          <div class="line" aria-hidden="true"></div>
+          <h2 class="section-title">制作実績</h2>
+        </div>
+
+        <div class="works">
+          <a class="worklink" href="seitai/" aria-label="やすらぎ整体院を見る">
+            <article class="work reveal">
+              <div class="mock p-seitai" aria-hidden="true">
+                <div class="mock-top">
+                  <span class="dotbtn"></span><span class="dotbtn"></span><span class="dotbtn"></span>
+                  <span class="url">/seitai/</span>
+                </div>
+                <div class="screen">
+                  <img src="img/seitai.png" alt="やすらぎ整体院のスクリーンショット" class="screen-img" />
+                </div>
+              </div>
+
+              <div class="work-meta">
+                <h3>やすらぎ整体院</h3>
+                <p>整体院のHP。予約導線と地図を見やすく配置。</p>
+                <span class="go">View project <span class="mark" aria-hidden="true"></span></span>
+              </div>
+            </article>
+          </a>
+
+          <a class="worklink" href="cafe/" aria-label="KOMOREBI COFFEEを見る">
+            <article class="work reveal">
+              <div class="mock p-cafe" aria-hidden="true">
+                <div class="mock-top">
+                  <span class="dotbtn"></span><span class="dotbtn"></span><span class="dotbtn"></span>
+                  <span class="url">/cafe/</span>
+                </div>
+                <div class="screen">
+                  <img src="img/cafe.png" alt="KOMOREBI COFFEEのスクリーンショット" class="screen-img" />
+                </div>
+              </div>
+
+              <div class="work-meta">
+                <h3>KOMOREBI COFFEE</h3>
+                <p>カフェのHP。メニューとアクセス情報中心のシンプル構成。</p>
+                <span class="go">View project <span class="mark" aria-hidden="true"></span></span>
+              </div>
+            </article>
+          </a>
+
+          <a class="worklink" href="gym/" aria-label="FORGEを見る">
+            <article class="work reveal">
+              <div class="mock p-gym" aria-hidden="true">
+                <div class="mock-top">
+                  <span class="dotbtn"></span><span class="dotbtn"></span><span class="dotbtn"></span>
+                  <span class="url">/gym/</span>
+                </div>
+                <div class="screen">
+                  <img src="img/gym.png" alt="FORGEのスクリーンショット" class="screen-img" />
+                </div>
+              </div>
+
+              <div class="work-meta">
+                <h3>FORGE</h3>
+                <p>パーソナルジムのLP。体験申し込みへの導線を重視。</p>
+                <span class="go">View project <span class="mark" aria-hidden="true"></span></span>
+              </div>
+            </article>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- AI SOLUTIONS -->
+    <section id="ai-solutions">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div class="kicker">04 / AI Solutions</div>
+          <div class="line" aria-hidden="true"></div>
+          <h2 class="section-title">AIソリューション</h2>
+        </div>
+
+        <div class="ai-subtitle reveal">
+          Difyプラットフォームを活用したAIチャットボット。実際に動作するデモをお試しいただけます。
+        </div>
+
+        <div class="bots-grid">
+          <div class="bot-card reveal" data-bot="customer-support">
+            <span class="bot-icon"><svg viewBox="0 0 48 48" fill="none"><path d="M10 8h28a2 2 0 012 2v18a2 2 0 01-2 2H18l-6 6v-6h-2a2 2 0 01-2-2V10a2 2 0 012-2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 17h16M16 23h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+            <h3 class="bot-name">AIカスタマーサポート</h3>
+            <p class="bot-desc">
+              よくある質問への回答や基本的なお問い合わせ対応を自動化。24時間対応でお客様満足度を向上させます。
+            </p>
+            <span class="try-btn">試してみる <span class="arrow"></span></span>
+          </div>
+
+          <div class="bot-card reveal" data-bot="knowledge-assistant">
+            <span class="bot-icon"><svg viewBox="0 0 48 48" fill="none"><path d="M14 6h14l10 10v26a2 2 0 01-2 2H14a2 2 0 01-2-2V8a2 2 0 012-2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M28 6v10h10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 26h12M18 32h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+            <h3 class="bot-name">社内ナレッジアシスタント</h3>
+            <p class="bot-desc">
+              社内規定や手順書を学習し、従業員の質問に即座に回答。業務効率化と知識共有を促進します。
+            </p>
+            <span class="try-btn">試してみる <span class="arrow"></span></span>
+          </div>
+
+          <div class="bot-card reveal" data-bot="shopping-advisor">
+            <span class="bot-icon"><svg viewBox="0 0 48 48" fill="none"><path d="M12 18h24l-2 22H14L12 18z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 18v-4a6 6 0 1112 0v4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <h3 class="bot-name">AIショッピングアドバイザー</h3>
+            <p class="bot-desc">
+              お客様の好みや用途をヒアリングし、最適な商品をおすすめ。売上向上と顧客体験の改善を実現します。
+            </p>
+            <span class="try-btn">試してみる <span class="arrow"></span></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DEMO SYSTEMS -->
+    <section id="demos">
+      <div class="wrap">
+        <div class="section-head reveal">
+          <div class="kicker">05 / Demos</div>
+          <div class="line" aria-hidden="true"></div>
+          <h2 class="section-title">システムデモ</h2>
+        </div>
+
+        <p class="demo-subtitle reveal">実際に触って試せるデモをご用意しました</p>
+
+        <div class="demo-grid">
+          <!-- 予約システム -->
+          <a href="/demos/reservation/" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;">
+            <div class="demo-card reveal" style="--demo-accent:#2563EB;">
+              <div class="demo-card-header">
+                <span class="demo-icon"><svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="6" width="32" height="30" rx="3" stroke="currentColor" stroke-width="2"/><path d="M4 14h32" stroke="currentColor" stroke-width="2"/><path d="M12 4v4M28 4v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><rect x="10" y="19" width="5" height="4" rx="1" fill="currentColor" opacity=".5"/><rect x="17.5" y="19" width="5" height="4" rx="1" fill="currentColor" opacity=".5"/><rect x="25" y="19" width="5" height="4" rx="1" fill="currentColor" opacity=".3"/><rect x="10" y="27" width="5" height="4" rx="1" fill="currentColor" opacity=".3"/><rect x="17.5" y="27" width="5" height="4" rx="1" fill="currentColor" opacity=".3"/></svg></span>
+                <h3 class="demo-name">予約システム</h3>
+              </div>
+              <p class="demo-desc">美容室向けの予約フロー。カレンダーから日時を選んで予約完了まで体験できます。</p>
+              <span class="demo-link">デモを見る →</span>
+            </div>
+          </a>
+
+          <!-- 口コミ管理ダッシュボード -->
+          <a href="/demos/review-dashboard/" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;">
+            <div class="demo-card reveal" style="--demo-accent:#EA580C;">
+              <div class="demo-card-header">
+                <span class="demo-icon"><svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="4" y="4" width="32" height="32" rx="3" stroke="currentColor" stroke-width="2"/><rect x="9" y="26" width="5" height="6" rx="1" fill="currentColor" opacity=".5"/><rect x="17.5" y="18" width="5" height="14" rx="1" fill="currentColor" opacity=".6"/><rect x="26" y="12" width="5" height="20" rx="1" fill="currentColor" opacity=".7"/><path d="M9 20l5-4 5 2 7-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <h3 class="demo-name">口コミ管理ダッシュボード</h3>
+              </div>
+              <p class="demo-desc">口コミデータの集計・分析ダッシュボード。グラフやフィルターもインタラクティブ。</p>
+              <span class="demo-link">デモを見る →</span>
+            </div>
+          </a>
+
+          <!-- 問い合わせ + AI自動返信 -->
+          <a href="/demos/contact-bot/" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;">
+            <div class="demo-card reveal" style="--demo-accent:#059669;">
+              <div class="demo-card-header">
+                <span class="demo-icon"><svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="3" y="8" width="34" height="24" rx="3" stroke="currentColor" stroke-width="2"/><path d="M3 11l17 11 17-11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <h3 class="demo-name">問い合わせ + 自動返信</h3>
+              </div>
+              <p class="demo-desc">フォーム送信後に内容を理解して自動返信。対応コストを大幅削減。</p>
+              <span class="demo-link">デモを見る →</span>
+            </div>
+          </a>
+
+          <!-- AIコンテンツ生成 -->
+          <a href="/demos/ai-content/" target="_blank" rel="noopener noreferrer" style="text-decoration:none;color:inherit;">
+            <div class="demo-card reveal" style="--demo-accent:#7C3AED;">
+              <div class="demo-card-header">
+                <span class="demo-icon"><svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24 4L8 24h10l-2 12 16-20H22l2-12z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="currentColor" fill-opacity=".15"/></svg></span>
+                <h3 class="demo-name">コンテンツ自動生成</h3>
+              </div>
+              <p class="demo-desc">SNS投稿やブログ、キャッチコピーを自動生成。トーンや文字数も指定可能。</p>
+              <span class="demo-link">デモを見る →</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chat Modal -->
+    <div class="chat-overlay" id="chatOverlay">
+      <div class="chat-modal">
+        <div class="chat-header">
+          <h3 class="chat-title">
+            <span id="chatBotIcon">💬</span>
+            <span id="chatBotName">AIアシスタント</span>
+          </h3>
+          <button class="close-btn" id="closeChat">&times;</button>
+        </div>
+        
+        <div class="chat-messages" id="chatMessages">
+          <div class="message">
+            <div class="message-avatar">💬</div>
+            <div class="message-bubble">
+              こんにちは！お気軽にご質問ください。
+            </div>
+          </div>
+        </div>
+        
+        <div class="typing-indicator" id="typingIndicator">
+          回答を生成中...
+        </div>
+        
+        <div class="chat-input-area">
+          <input type="text" class="chat-input" id="chatInput" placeholder="メッセージを入力..." />
+          <button class="send-btn" id="sendBtn">送信</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CONTACT -->
+    <section id="contact" class="contact">
+      <div class="wrap">
+        <div class="cta reveal">
+          <div class="small">Contact</div>
+          <div style="color: var(--muted); font-size: 14px; line-height: 1.9;">
+            お仕事のご相談はこちら
+          </div>
+          <a class="mail" href="mailto:logence63@gmail.com">logence63@gmail.com</a>
+          <div style="color: rgba(244,245,247,.45); font-size: 12px; line-height: 1.8;">
+            「こんなの作れますか？」くらいの相談でも大丈夫です。
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap" style="display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap;">
+      <div>© <span id="y"></span> Ando.</div>
+      <div style="color: rgba(244,245,247,.35)">Aichi / Remote</div>
+    </div>
+  </footer>
+
+  <script>
+    // IntersectionObserver reveal (subtle)
+    (function(){
+      const els = Array.from(document.querySelectorAll('.reveal'));
+      const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (reduce){
+        els.forEach(el => el.classList.add('is-in'));
+        return;
+      }
+
+      const io = new IntersectionObserver((entries) => {
+        for (const e of entries){
+          if (!e.isIntersecting) continue;
+          e.target.classList.add('is-in');
+          io.unobserve(e.target);
+        }
+      }, { threshold: 0.14, rootMargin: '0px 0px -6% 0px' });
+
+      els.forEach(el => io.observe(el));
+
+      const y = document.getElementById('y');
+      if (y) y.textContent = String(new Date().getFullYear());
+    })();
+
+    // Dify Chat Integration
+    const botConfigs = {
+      'customer-support': {
+        name: 'AIカスタマーサポート',
+        icon: '<svg viewBox="0 0 48 48" fill="none"><path d="M10 8h28a2 2 0 012 2v18a2 2 0 01-2 2H18l-6 6v-6h-2a2 2 0 01-2-2V10a2 2 0 012-2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M16 17h16M16 23h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+        apiKey: 'app-rBM3FGBOni800iQ4JPyofEij',
+        apiUrl: '/api/chat',
+        suggestions: ['返品・交換について', '注文状況を確認したい', '送料はいくら？']
+      },
+      'knowledge-assistant': {
+        name: '社内ナレッジアシスタント',
+        icon: '<svg viewBox="0 0 48 48" fill="none"><path d="M14 6h14l10 10v26a2 2 0 01-2 2H14a2 2 0 01-2-2V8a2 2 0 012-2z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M28 6v10h10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 26h12M18 32h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+        apiKey: 'app-oou3nkIRmYWmSSErFfrt8yMk',
+        apiUrl: '/api/chat',
+        suggestions: ['勤務時間を教えて', '有給の申請方法は？', 'リモートワークのルール']
+      },
+      'shopping-advisor': {
+        name: 'AIショッピングアドバイザー',
+        icon: '<svg viewBox="0 0 48 48" fill="none"><path d="M12 18h24l-2 22H14L12 18z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 18v-4a6 6 0 1112 0v4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        apiKey: 'app-h5bxRoUr5doWm0d7TZEP1g',
+        apiUrl: '/api/chat',
+        suggestions: ['予算1万円でプレゼント', '在宅ワーク環境を整えたい', 'おすすめのギフトは？']
+      }
+    };
+
+    let currentBot = null;
+    let currentUserId = null;
+    let currentConversationId = null;
+
+    // Generate random user ID
+    function generateUserId() {
+      return 'user_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+    }
+
+    // Open chat modal
+    function openChat(botKey) {
+      currentBot = botConfigs[botKey];
+      currentUserId = generateUserId();
+      currentConversationId = null;
+      
+      const overlay = document.getElementById('chatOverlay');
+      const chatBotIcon = document.getElementById('chatBotIcon');
+      const chatBotName = document.getElementById('chatBotName');
+      const chatMessages = document.getElementById('chatMessages');
+      
+      // Build suggestions HTML
+      const suggestions = currentBot.suggestions || [];
+      let suggestionsHtml = '';
+      if (suggestions.length > 0) {
+        suggestionsHtml = '<div class="suggestions" id="suggestionsContainer">';
+        suggestions.forEach(text => {
+          suggestionsHtml += `<button class="suggestion-btn" data-text="${text}">${text}</button>`;
+        });
+        suggestionsHtml += '</div>';
+      }
+      
+      // Reset chat
+      chatMessages.innerHTML = `
+        <div class="message">
+          <div class="message-avatar">${currentBot.icon}</div>
+          <div class="message-bubble">
+            こんにちは！お気軽にご質問ください。
+          </div>
+        </div>
+        ${suggestionsHtml}
+      `;
+      
+      // Suggestion click handlers
+      chatMessages.querySelectorAll('.suggestion-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const text = this.dataset.text;
+          const container = document.getElementById('suggestionsContainer');
+          if (container) container.remove();
+          sendMessage(text);
+        });
+      });
+      
+      // Update header
+      chatBotIcon.innerHTML = currentBot.icon;
+      chatBotName.textContent = currentBot.name;
+      
+      // Show modal
+      overlay.classList.add('active');
+      
+      // Focus input
+      document.getElementById('chatInput').focus();
+    }
+
+    // Close chat modal
+    function closeChat() {
+      document.getElementById('chatOverlay').classList.remove('active');
+      currentBot = null;
+      currentUserId = null;
+      currentConversationId = null;
+    }
+
+    // Add message to chat
+    function addMessage(content, isUser = false) {
+      const chatMessages = document.getElementById('chatMessages');
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'message' + (isUser ? ' user' : '');
+      
+      messageDiv.innerHTML = `
+        <div class="message-avatar">${isUser ? 'You' : currentBot.icon}</div>
+        <div class="message-bubble">${content}</div>
+      `;
+      
+      chatMessages.appendChild(messageDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Send message to Dify API
+    async function sendMessage(message) {
+      if (!currentBot || !message.trim()) return;
+      
+      // Remove suggestions if still visible
+      const suggestionsEl = document.getElementById('suggestionsContainer');
+      if (suggestionsEl) suggestionsEl.remove();
+      
+      const sendBtn = document.getElementById('sendBtn');
+      const chatInput = document.getElementById('chatInput');
+      const typingIndicator = document.getElementById('typingIndicator');
+      
+      // Disable input
+      sendBtn.disabled = true;
+      chatInput.disabled = true;
+      
+      // Show user message
+      addMessage(message, true);
+      
+      // Show typing indicator
+      typingIndicator.classList.add('active');
+      
+      try {
+        const requestBody = {
+          inputs: {},
+          query: message,
+          response_mode: "blocking",
+          conversation_id: currentConversationId || "",
+          user: currentUserId,
+          files: []
+        };
+
+        const response = await fetch(currentBot.apiUrl, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${currentBot.apiKey}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestBody)
+        });
+
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        // Update conversation ID
+        if (data.conversation_id && !currentConversationId) {
+          currentConversationId = data.conversation_id;
+        }
+        
+        // Show bot response
+        const botMessage = data.answer || 'すみません、回答を生成できませんでした。';
+        addMessage(botMessage);
+        
+      } catch (error) {
+        console.error('Dify API Error:', error);
+        addMessage('申し訳ございません。現在、このボットは一時的に利用できません。');
+      } finally {
+        // Hide typing indicator
+        typingIndicator.classList.remove('active');
+        
+        // Re-enable input
+        sendBtn.disabled = false;
+        chatInput.disabled = false;
+        chatInput.value = '';
+        chatInput.focus();
+      }
+    }
+
+    // Event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+      // Bot card click handlers
+      document.querySelectorAll('.bot-card').forEach(card => {
+        card.addEventListener('click', function() {
+          const botKey = this.dataset.bot;
+          openChat(botKey);
+        });
+      });
+
+      // Close modal handlers
+      document.getElementById('closeChat').addEventListener('click', closeChat);
+      document.getElementById('chatOverlay').addEventListener('click', function(e) {
+        if (e.target === this) closeChat();
+      });
+
+      // Send button handler
+      document.getElementById('sendBtn').addEventListener('click', function() {
+        const input = document.getElementById('chatInput');
+        sendMessage(input.value);
+      });
+
+      // Enter key handler
+      document.getElementById('chatInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          sendMessage(this.value);
+        }
+      });
+
+      // Escape key handler
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && document.getElementById('chatOverlay').classList.contains('active')) {
+          closeChat();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

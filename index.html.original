@@ -3,24 +3,24 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#ffffff" />
-  <title>Paimen | AI × Web制作で中小企業のDXを支援</title>
-  <meta name="description" content="Paimen - AI導入支援・Web制作・業務自動化で中小企業のデジタル化をワンストップサポート。" />
+  <meta name="theme-color" content="#1a1a1a" />
+  <title>Ando. | Web Developer & AI Engineer</title>
+  <meta name="description" content="あんどう / フリーランスエンジニア。愛知拠点。Next.js・React でWebアプリやAI連携ツールを開発。" />
 
   <!-- OGP -->
-  <meta property="og:title" content="Paimen | AI × Web制作で中小企業のDXを支援" />
-  <meta property="og:description" content="Paimen - AI導入支援・Web制作・業務自動化で中小企業のデジタル化をワンストップサポート。" />
+  <meta property="og:title" content="Ando. | Web Developer & AI Engineer" />
+  <meta property="og:description" content="あんどう / フリーランスエンジニア。愛知拠点。Next.js・React でWebアプリやAI連携ツールを開発。" />
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://rikimaru63.github.io/paimen-portfolio/" />
-  <meta property="og:image" content="https://rikimaru63.github.io/paimen-portfolio/img/ogp.png" />
-  <meta property="og:site_name" content="Paimen" />
+  <meta property="og:url" content="https://portfolio.logence.co.jp/" />
+  <meta property="og:image" content="https://portfolio.logence.co.jp/img/ogp.png" />
+  <meta property="og:site_name" content="Ando. Portfolio" />
   <meta property="og:locale" content="ja_JP" />
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Paimen | AI × Web制作で中小企業のDXを支援" />
-  <meta name="twitter:description" content="Paimen - AI導入支援・Web制作・業務自動化で中小企業のデジタル化をワンストップサポート。" />
-  <meta name="twitter:image" content="https://rikimaru63.github.io/paimen-portfolio/img/ogp.png" />
+  <meta name="twitter:title" content="Ando. | Web Developer & AI Engineer" />
+  <meta name="twitter:description" content="あんどう / フリーランスエンジニア。愛知拠点。Next.js・React でWebアプリやAI連携ツールを開発。" />
+  <meta name="twitter:image" content="https://portfolio.logence.co.jp/img/ogp.png" />
 
   <!-- Fonts: Shippori Mincho (headings) + Zen Kaku Gothic New (body) + DM Sans (english) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -33,13 +33,13 @@
        Colors: Warm gray + Off-white + 鶯色 (uguisu)
        ================================================ */
     :root {
-      --bg: #ffffff;
-      --bg-sub: #f5f8fc;
-      --text: #1a2332;
-      --muted: rgba(26, 35, 50, 0.6);
-      --faint: rgba(26, 35, 50, 0.1);
-      --accent: #1565c0;
-      --accent-soft: rgba(21, 101, 192, 0.12);
+      --bg: #1a1a1a;
+      --bg-sub: #222220;
+      --text: #f0ece3;
+      --muted: rgba(240, 236, 227, 0.6);
+      --faint: rgba(240, 236, 227, 0.1);
+      --accent: #928c36;
+      --accent-soft: rgba(146, 140, 54, 0.15);
     }
 
     /* ================================================
@@ -77,7 +77,7 @@
       inset: 0 0 auto 0;
       z-index: 50;
       padding: 18px 0;
-      background: linear-gradient(to bottom, rgba(255,255,255,.95), rgba(255,255,255,0));
+      background: linear-gradient(to bottom, rgba(26,26,26,.88), rgba(26,26,26,0));
       pointer-events: none;
     }
     .topbar .inner {
@@ -128,7 +128,7 @@
        Hero - Left text + Right terminal
        ================================================ */
     .hero {
-      min-height: 100svh; background: linear-gradient(135deg, #0d1b2a 0%, #1565c0 100%); color: #fff;
+      min-height: 100svh;
       padding: 140px 0 100px;
       display: flex;
       align-items: center;
@@ -158,7 +158,7 @@
     }
     .accent-dot { color: var(--accent); }
 
-    .role { color: rgba(255,255,255,.7) !important;
+    .role {
       margin-top: 18px;
       font-family: 'DM Sans', sans-serif;
       font-size: 13px;
@@ -167,7 +167,7 @@
       text-transform: uppercase;
       color: var(--muted);
     }
-    .intro { color: rgba(255,255,255,.7) !important;
+    .intro {
       margin-top: 22px;
       max-width: 48ch;
       font-size: 15px;
@@ -175,7 +175,7 @@
       color: var(--muted);
     }
 
-    .availability { color: rgba(255,255,255,.7) !important;
+    .availability {
       display: inline-flex;
       align-items: center;
       gap: 8px;
@@ -201,8 +201,8 @@
       to { opacity: 1; }
     }
     .terminal {
-      background: #1a2332;
-      border: 1px solid rgba(26,35,50,.1);
+      background: #111110;
+      border: 1px solid rgba(240,236,227,.08);
       border-radius: 10px;
       overflow: hidden;
       font-family: 'DM Sans', ui-monospace, 'SF Mono', Menlo, monospace;
@@ -214,8 +214,8 @@
       align-items: center;
       gap: 7px;
       padding: 10px 14px;
-      background: rgba(26,35,50,.06);
-      border-bottom: 1px solid rgba(26,35,50,.1);
+      background: rgba(240,236,227,.04);
+      border-bottom: 1px solid rgba(240,236,227,.06);
     }
     .term-dot {
       width: 10px;
@@ -228,12 +228,12 @@
     .term-title {
       margin-left: 8px;
       font-size: 11px;
-      color: rgba(26,35,50,.4);
+      color: rgba(240,236,227,.35);
       letter-spacing: .04em;
     }
     .term-body {
       padding: 16px 18px;
-      color: rgba(200,210,225,.8);
+      color: rgba(240,236,227,.55);
       min-height: 180px;
     }
     .term-line {
@@ -284,7 +284,7 @@
       font-weight: 500;
       letter-spacing: .24em;
       text-transform: uppercase;
-      color: rgba(26,35,50,.45);
+      color: rgba(240,236,227,.4);
       min-width: 72px;
     }
     .sep-line {
@@ -329,7 +329,7 @@
       margin-top: 8px;
       padding-left: 18px;
       border-left: 1px solid var(--faint);
-      color: rgba(26,35,50,.5);
+      color: rgba(240,236,227,.48);
       font-size: 13px;
       line-height: 2;
     }
@@ -367,7 +367,7 @@
       font-weight: 500;
       letter-spacing: .18em;
       text-transform: uppercase;
-      color: rgba(26,35,50,.45);
+      color: rgba(240,236,227,.4);
       min-width: 90px;
       flex-shrink: 0;
     }
@@ -399,7 +399,7 @@
       margin-top: 12px;
       padding-left: 18px;
       border-left: 1px solid var(--faint);
-      color: rgba(26,35,50,.5);
+      color: rgba(240,236,227,.48);
       font-size: 13px;
       line-height: 2;
     }
@@ -456,9 +456,9 @@
       font-weight: 500;
       letter-spacing: .16em;
       text-transform: uppercase;
-      color: rgba(26,35,50,.7);
+      color: rgba(240,236,227,.7);
       padding: 10px 0;
-      border-bottom: 1px solid rgba(26,35,50,.12);
+      border-bottom: 1px solid rgba(240,236,227,.12);
       transition: border-color .3s, color .3s;
     }
     .work-meta .go .arrow-mark {
@@ -479,14 +479,14 @@
 
     /* Browser mockup */
     .mock {
-      border: 1px solid rgba(26,35,50,.1);
-      background: rgba(245,248,252,.9);
+      border: 1px solid rgba(240,236,227,.1);
+      background: rgba(34,34,32,.7);
       border-radius: 12px;
       overflow: hidden;
       transition: border-color .3s;
     }
     a.worklink:hover .mock {
-      border-color: rgba(21,101,192,.3);
+      border-color: rgba(146,140,54,.4);
     }
     .mock-top {
       height: 34px;
@@ -494,20 +494,20 @@
       align-items: center;
       padding: 0 12px;
       gap: 7px;
-      border-bottom: 1px solid rgba(26,35,50,.1);
-      background: rgba(240,243,248,.95);
+      border-bottom: 1px solid rgba(240,236,227,.08);
+      background: rgba(34,34,32,.9);
     }
     .dotbtn {
       width: 9px;
       height: 9px;
       border-radius: 50%;
-      background: rgba(26,35,50,.15);
+      background: rgba(240,236,227,.15);
     }
     .url {
       margin-left: 8px;
       font-family: 'DM Sans', sans-serif;
       font-size: 11px;
-      color: rgba(26,35,50,.4);
+      color: rgba(240,236,227,.35);
       letter-spacing: .04em;
       white-space: nowrap;
       overflow: hidden;
@@ -516,7 +516,7 @@
     .screen {
       aspect-ratio: 16 / 10;
       position: relative;
-      background: #1a2332;
+      background: #111110;
       overflow: hidden;
     }
     .screen-img {
@@ -561,8 +561,8 @@
       transition: background .25s, border-color .25s;
     }
     .bot-card:hover {
-      background: rgba(21, 101, 192, .05);
-      border-color: rgba(26,35,50,.16);
+      background: rgba(146, 140, 54, .05);
+      border-color: rgba(240,236,227,.16);
       border-left-color: var(--accent);
     }
     .bot-icon {
@@ -651,8 +651,8 @@
       flex-direction: column;
     }
     .demo-card:hover {
-      background: rgba(21,101,192,.03);
-      border-color: rgba(26,35,50,.18);
+      background: rgba(240,236,227,.03);
+      border-color: rgba(240,236,227,.18);
       border-left-color: var(--demo-accent, var(--accent));
     }
     .demo-card-header {
@@ -855,8 +855,8 @@
       padding: 4px 0 16px 44px;
     }
     .suggestion-btn {
-      background: rgba(26,35,50,.04);
-      border: 1px solid rgba(26,35,50,.1);
+      background: rgba(240,236,227,.05);
+      border: 1px solid rgba(240,236,227,.1);
       color: var(--muted);
       font-family: 'Zen Kaku Gothic New', sans-serif;
       font-size: 13px;
@@ -866,9 +866,9 @@
       transition: background .25s, color .25s, border-color .25s;
     }
     .suggestion-btn:hover {
-      background: rgba(26,35,50,.08);
+      background: rgba(240,236,227,.1);
       color: var(--text);
-      border-color: rgba(21,101,192,.35);
+      border-color: rgba(146,140,54,.35);
     }
 
     /* ================================================
@@ -890,7 +890,7 @@
       font-weight: 500;
       letter-spacing: .24em;
       text-transform: uppercase;
-      color: rgba(26,35,50,.45);
+      color: rgba(240,236,227,.4);
       margin-bottom: 16px;
     }
     .contact-title {
@@ -913,7 +913,7 @@
       font-weight: 500;
       letter-spacing: -.01em;
       padding-bottom: 8px;
-      border-bottom: 1px solid rgba(26,35,50,.12);
+      border-bottom: 1px solid rgba(240,236,227,.12);
       transition: border-color .3s, color .3s;
       display: inline-block;
     }
@@ -924,7 +924,7 @@
     .contact-location {
       margin-top: 14px;
       font-size: 12px;
-      color: rgba(26,35,50,.4);
+      color: rgba(240,236,227,.35);
     }
 
     /* ================================================
@@ -932,7 +932,7 @@
        ================================================ */
     footer {
       padding: 40px 0 56px;
-      color: rgba(26,35,50,.4);
+      color: rgba(240,236,227,.35);
       font-size: 12px;
       letter-spacing: .02em;
     }
@@ -1038,7 +1038,7 @@
   <header class="topbar" aria-label="Site header">
     <div class="wrap inner">
       <a class="brand" href="#top" aria-label="Go to top">
-        <img src="logo.jpg" style="height:32px;vertical-align:middle;margin-right:8px;" alt="Paimen" />Paimen
+        Ando<span class="dot">.</span>
       </a>
       <nav class="nav" aria-label="Primary">
         <a href="#about">About</a>
@@ -1055,15 +1055,15 @@
     <section class="hero">
       <div class="wrap hero-grid">
         <div class="hero-text">
-          <h1 class="name">Paimen<span class="accent-dot">.</span></h1>
-          <div class="role">AI × Web Solutions</div>
+          <h1 class="name">Ando<span class="accent-dot">.</span></h1>
+          <div class="role">Web Developer / AI Engineer</div>
           <p class="intro">
-            中小企業のデジタル化をワンストップで支援します。<br>
-            ホームページ制作からAIチャットボット導入、業務自動化まで。<br>御社の課題に合わせた最適なソリューションをご提案します。
+            愛知を拠点に、フリーランスで開発しています。<br>
+            Next.js と React でWebアプリを作りつつ、最近はAIを組み込んだチャットボットや業務ツールの開発が増えてきました。
           </p>
           <div class="availability">
             <span class="avail-dot"></span>
-            ご相談受付中
+            お仕事受付中
           </div>
         </div>
 
@@ -1100,17 +1100,17 @@
 
         <div class="about-layout">
           <p class="prose reveal-s">
-            「ITに詳しい人がいなくて、何から始めればいいかわからない」——そんな中小企業の声に応えるために、Paimenは生まれました。<br><br>
-            ホームページ制作、AIチャットボット導入、業務の自動化まで、デジタル化に必要なことをワンストップでお任せいただけます。
-            「導入して終わり」ではなく、実際に成果が出るまで伴走します。技術的な専門用語は使わず、わかりやすいご説明を心がけています。<br><br>
-            
+            ECサイトの運営をしていた時に「欲しい機能がどこにも売ってない」と気づいて、自分で作り始めたのがきっかけです。<br><br>
+            今はフリーランスで受託開発をしながら、自社サービスも並行して立ち上げています。
+            ECサイト、業務アプリ、LP、AIチャットボットなど、やってきたことは色々ですが、一貫してるのは「とりあえず動くもの」で終わらせず、ちゃんと使えるところまで持っていくこと。<br><br>
+            少人数チームや個人事業主の方と直接やりとりしながら作るのが好きです。
           </p>
 
           <div class="about-note reveal-s">
             <strong>仕事の進め方</strong><br>
-            お話を聞いて、ご提案して、作って、確認していただく。<br>
-            この繰り返しで、御社に合ったものを形にします。<br>
-            「思ってたのと違う」を防ぐ、確実な進め方です。
+            ヒアリングして、小さく作って、見せて、直す。<br>
+            この繰り返しで形にしていきます。<br>
+            遠回りに見えますが、結局これが一番速いです。
           </div>
         </div>
       </div>
@@ -1158,8 +1158,8 @@
           <div class="skills-note reveal-s">
             <strong>よくやる仕事</strong>
             <p>
-              HP制作、AIチャットボット導入、業務自動化ツール開発。<br>
-              導入後の運用サポートまでお任せください。
+              Webアプリの新規開発、既存サービスへのAI機能追加、LP・HP制作。<br>
+              作って終わりじゃなく、改善まで付き合います。
             </p>
           </div>
         </div>
@@ -1406,14 +1406,14 @@
         <div class="contact-layout">
           <div>
             <div class="contact-kicker">Contact</div>
-            <h2 class="contact-title">お気軽にご相談ください</h2>
+            <h2 class="contact-title">お仕事のご相談</h2>
             <p class="contact-sub">
-              「こんなことできる？」「費用感を知りたい」など、小さなご質問でも大歓迎です。お電話でのご相談も承ります。
+              「こんなの作れますか?」くらいの相談でも大丈夫です。
             </p>
           </div>
           <div class="contact-right">
-            <a class="contact-email" href="mailto:info@paimen.jp">info@paimen.jp</a>
-            <div class="contact-location">九州 / 全国リモート対応</div>
+            <a class="contact-email" href="mailto:logence63@gmail.com">logence63@gmail.com</a>
+            <div class="contact-location">愛知県 / リモート対応</div>
           </div>
         </div>
       </div>
@@ -1423,8 +1423,8 @@
 
   <footer>
     <div class="wrap inner">
-      <div>© <span id="y"></span> Paimen Inc.</div>
-      <div>AI × Webで中小企業のDXを支援</div>
+      <div>© <span id="y"></span> Ando.</div>
+      <div>愛知からリモートで</div>
     </div>
   </footer>
 

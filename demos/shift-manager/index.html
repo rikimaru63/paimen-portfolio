@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>シフト管理 - Hair Salon LUCIA</title>
+<meta name="description" content="美容サロンのシフト管理システムデモ。カレンダー表示、スタッフ別シフト、人件費概算まで一元管理を体験できます。">
+<meta property="og:title" content="シフト管理 - Hair Salon LUCIA - デモ">
+<meta property="og:description" content="美容サロンのシフト管理システムデモ。カレンダー表示、スタッフ別シフト、人件費概算まで一元管理を体験できます。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://portfolio.logence.co.jp/demos/shift-manager/">
+<meta property="og:image" content="https://portfolio.logence.co.jp/img/ogp.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="シフト管理 - Hair Salon LUCIA - デモ">
+<meta name="twitter:description" content="美容サロンのシフト管理システムデモ。カレンダー表示、スタッフ別シフト、人件費概算まで一元管理を体験できます。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=Shippori+Mincho:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --sidebar-w: 240px;
+  --header-h: 64px;
+  --bg: #F8FAFC;
+  --sidebar-bg: #1E293B;
+  --sidebar-active: #334155;
+  --sidebar-hover: #2D3A4E;
+  --white: #FFFFFF;
+  --gray-50: #F8FAFC;
+  --gray-100: #F1F5F9;
+  --gray-200: #E2E8F0;
+  --gray-300: #CBD5E1;
+  --gray-400: #94A3B8;
+  --gray-500: #64748B;
+  --gray-600: #475569;
+  --gray-700: #334155;
+  --gray-800: #1E293B;
+  --gray-900: #0F172A;
+  --blue-50: #EFF6FF;
+  --blue-100: #DBEAFE;
+  --blue-500: #3B82F6;
+  --blue-600: #2563EB;
+  --blue-700: #1D4ED8;
+  --purple-50: #F5F3FF;
+  --purple-100: #EDE9FE;
+  --purple-500: #8B5CF6;
+  --purple-600: #7C3AED;
+  --purple-700: #6D28D9;
+  --orange-50: #FFF7ED;
+  --orange-100: #FFEDD5;
+  --orange-500: #F97316;
+  --orange-600: #EA580C;
+  --orange-700: #C2410C;
+  --holiday-bg: #F1F5F9;
+  --holiday-text: #94A3B8;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.05);
+  --shadow: 0 1px 3px rgba(0,0,0,.1), 0 1px 2px rgba(0,0,0,.06);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,.1), 0 2px 4px -2px rgba(0,0,0,.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,.1), 0 4px 6px -4px rgba(0,0,0,.1);
+  --radius: 8px;
+  --radius-sm: 4px;
+  --radius-lg: 12px;
+  --transition: 150ms cubic-bezier(.4,0,.2,1);
+}
+
+body {
+  font-family: 'DM Sans', 'Zen Kaku Gothic New', sans-serif;
+  background: var(--bg);
+  color: var(--gray-800);
+  line-height: 1.5;
+  overflow-x: hidden;
+}
+
+/* ===== Demo Banner ===== */
+.demo-banner {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
+  background: linear-gradient(135deg, #6366F1, #8B5CF6);
+  color: white; text-align: center;
+  padding: 6px 16px; font-size: 12px; font-weight: 500;
+  letter-spacing: .02em;
+}
+.demo-banner i { margin-right: 6px; }
+
+/* ===== Sidebar ===== */
+.sidebar {
+  position: fixed; top: 28px; left: 0; bottom: 0;
+  width: var(--sidebar-w);
+  background: var(--sidebar-bg);
+  color: var(--gray-300);
+  display: flex; flex-direction: column;
+  z-index: 100;
+  transition: transform var(--transition);
+}
+
+.sidebar-brand {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.sidebar-brand h1 {
+  font-family: 'Shippori Mincho', serif;
+  font-size: 18px; font-weight: 600;
+  color: var(--white); letter-spacing: .04em;
+}
+.sidebar-brand span {
+  font-size: 11px; color: var(--gray-400);
+  display: block; margin-top: 2px; letter-spacing: .02em;
+}
+
+.sidebar-nav { flex: 1; padding: 12px 0; overflow-y: auto; }
+.sidebar-nav a {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 20px; color: var(--gray-400);
+  text-decoration: none; font-size: 13.5px; font-weight: 500;
+  transition: all var(--transition); border-left: 3px solid transparent;
+}
+.sidebar-nav a:hover { background: var(--sidebar-hover); color: var(--gray-200); }
+.sidebar-nav a.active {
+  background: var(--sidebar-active); color: var(--white);
+  border-left-color: var(--blue-500);
+}
+.sidebar-nav a i { width: 18px; text-align: center; font-size: 14px; }
+.sidebar-nav .nav-section {
+  padding: 16px 20px 6px; font-size: 10px; text-transform: uppercase;
+  letter-spacing: .1em; color: var(--gray-500); font-weight: 600;
+}
+
+.sidebar-footer {
+  padding: 16px 20px; border-top: 1px solid rgba(255,255,255,.08);
+  display: flex; align-items: center; gap: 10px;
+}
+.sidebar-footer .avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: linear-gradient(135deg, #6366F1, #8B5CF6);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; color: white; font-weight: 600;
+}
+.sidebar-footer .info { font-size: 12px; }
+.sidebar-footer .info .name { color: var(--white); font-weight: 500; }
+.sidebar-footer .info .role { color: var(--gray-500); font-size: 11px; }
+
+/* ===== Main Content ===== */
+.main {
+  margin-left: var(--sidebar-w);
+  margin-top: 28px;
+  min-height: calc(100vh - 28px);
+}
+
+/* Header */
+.header {
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-200);
+  padding: 0 28px;
+  height: var(--header-h);
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 28px; z-index: 50;
+}
+.header-left { display: flex; align-items: center; gap: 16px; }
+.mobile-toggle {
+  display: none; background: none; border: none; cursor: pointer;
+  font-size: 18px; color: var(--gray-600); padding: 4px;
+}
+.header-title { font-size: 18px; font-weight: 700; color: var(--gray-900); }
+.header-right { display: flex; align-items: center; gap: 12px; }
+.header-right .icon-btn {
+  width: 36px; height: 36px; border-radius: var(--radius);
+  border: 1px solid var(--gray-200); background: var(--white);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: var(--gray-500); font-size: 14px;
+  transition: all var(--transition); position: relative;
+}
+.header-right .icon-btn:hover { border-color: var(--gray-300); color: var(--gray-700); }
+.header-right .icon-btn .badge {
+  position: absolute; top: -4px; right: -4px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: #EF4444; color: white; font-size: 9px;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 600;
+}
+
+/* Content */
+.content { padding: 24px 28px; }
+
+/* KPI Cards */
+.kpi-row {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 16px; margin-bottom: 24px;
+}
+.kpi-card {
+  background: var(--white); border-radius: var(--radius-lg);
+  padding: 18px 20px; border: 1px solid var(--gray-200);
+  transition: all var(--transition);
+}
+.kpi-card:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.kpi-card .kpi-label {
+  font-size: 12px; color: var(--gray-500); font-weight: 500;
+  display: flex; align-items: center; gap: 6px;
+}
+.kpi-card .kpi-label i { font-size: 13px; }
+.kpi-card .kpi-value {
+  font-size: 26px; font-weight: 700; color: var(--gray-900);
+  margin-top: 6px; line-height: 1.2;
+}
+.kpi-card .kpi-value span { font-size: 14px; font-weight: 500; color: var(--gray-500); margin-left: 2px; }
+.kpi-card .kpi-sub {
+  font-size: 11px; color: var(--gray-400); margin-top: 4px;
+  display: flex; align-items: center; gap: 4px;
+}
+.kpi-card .kpi-sub.up { color: #10B981; }
+.kpi-card .kpi-sub.down { color: #EF4444; }
+
+/* Toolbar */
+.toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 16px; flex-wrap: wrap; gap: 12px;
+}
+.toolbar-left { display: flex; align-items: center; gap: 12px; }
+.month-nav {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--white); border: 1px solid var(--gray-200);
+  border-radius: var(--radius); padding: 4px;
+}
+.month-nav button {
+  width: 32px; height: 32px; border: none; background: none;
+  border-radius: var(--radius-sm); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--gray-600); font-size: 13px;
+  transition: all var(--transition);
+}
+.month-nav button:hover { background: var(--gray-100); color: var(--gray-800); }
+.month-nav .month-label {
+  font-size: 15px; font-weight: 600; color: var(--gray-800);
+  min-width: 120px; text-align: center; white-space: nowrap;
+}
+.month-nav .today-btn {
+  width: auto; padding: 0 10px;
+  font-size: 12px; font-weight: 500; color: var(--blue-600);
+}
+.month-nav .today-btn:hover { background: var(--blue-50); }
+
+.view-tabs {
+  display: flex; background: var(--white); border: 1px solid var(--gray-200);
+  border-radius: var(--radius); padding: 3px; gap: 2px;
+}
+.view-tabs button {
+  padding: 6px 14px; border: none; background: none;
+  border-radius: var(--radius-sm); cursor: pointer;
+  font-size: 12.5px; font-weight: 500; color: var(--gray-500);
+  transition: all var(--transition);
+}
+.view-tabs button:hover { color: var(--gray-700); }
+.view-tabs button.active {
+  background: var(--blue-600); color: var(--white);
+}
+
+.toolbar-right { display: flex; align-items: center; gap: 8px; }
+.filter-dropdown {
+  padding: 7px 12px; border: 1px solid var(--gray-200);
+  border-radius: var(--radius); background: var(--white);
+  font-size: 12.5px; color: var(--gray-600); cursor: pointer;
+  font-family: inherit;
+}
+
+/* Shift Table */
+.shift-table-wrap {
+  background: var(--white); border-radius: var(--radius-lg);
+  border: 1px solid var(--gray-200); overflow: hidden;
+}
+.shift-table-scroll { overflow-x: auto; }
+
+.shift-grid {
+  display: grid;
+  min-width: 900px;
+}
+
+/* Header row: staff count summary */
+.shift-grid .grid-header {
+  display: contents;
+}
+.shift-grid .col-staff-header,
+.shift-grid .col-date-header {
+  padding: 10px 6px;
+  font-size: 11px; font-weight: 600;
+  color: var(--gray-500);
+  text-align: center;
+  border-bottom: 2px solid var(--gray-200);
+  background: var(--gray-50);
+  position: sticky; top: 0; z-index: 5;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.col-staff-header {
+  text-align: left; padding-left: 16px; justify-content: center;
+  position: sticky; left: 0; z-index: 10; min-width: 140px;
+  background: var(--gray-50);
+}
+.col-date-header .day-num { font-size: 14px; font-weight: 700; color: var(--gray-800); }
+.col-date-header .day-name { font-size: 10px; color: var(--gray-400); margin-top: 1px; }
+.col-date-header .staff-count {
+  font-size: 9px; color: var(--blue-600);
+  background: var(--blue-50); padding: 1px 6px;
+  border-radius: 10px; margin-top: 3px; font-weight: 600;
+}
+.col-date-header.holiday { background: #FEF2F2; }
+.col-date-header.holiday .day-num { color: #EF4444; }
+.col-date-header.holiday .day-name { color: #FCA5A5; }
+.col-date-header.sunday .day-num { color: #EF4444; }
+.col-date-header.saturday .day-num { color: var(--blue-500); }
+.col-date-header.today { background: var(--blue-50); }
+.col-date-header.today .day-num { color: var(--blue-600); }
+
+/* Staff rows */
+.staff-row { display: contents; }
+.staff-cell {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--gray-100);
+  display: flex; align-items: center; gap: 10px;
+  position: sticky; left: 0; z-index: 5;
+  background: var(--white); min-width: 140px;
+  cursor: pointer; transition: background var(--transition);
+}
+.staff-cell:hover { background: var(--blue-50); }
+.staff-cell .staff-avatar {
+  width: 30px; height: 30px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; color: white; font-weight: 600; flex-shrink: 0;
+}
+.staff-cell .staff-info { min-width: 0; }
+.staff-cell .staff-name { font-size: 12.5px; font-weight: 600; color: var(--gray-800); white-space: nowrap; }
+.staff-cell .staff-role { font-size: 10px; color: var(--gray-400); }
+
+/* Shift cells */
+.shift-cell {
+  padding: 6px 4px;
+  border-bottom: 1px solid var(--gray-100);
+  border-left: 1px solid var(--gray-50);
+  display: flex; align-items: center; justify-content: center;
+  transition: all var(--transition); cursor: pointer; min-height: 48px;
+}
+.shift-cell:hover { filter: brightness(.96); }
+.shift-cell.today-col { background: rgba(59,130,246,.03); }
+
+.shift-badge {
+  padding: 4px 6px;
+  border-radius: var(--radius-sm);
+  font-size: 10px; font-weight: 600;
+  text-align: center; width: 100%;
+  line-height: 1.3;
+  transition: transform var(--transition);
+}
+.shift-cell:hover .shift-badge { transform: scale(1.04); }
+
+.shift-badge.early {
+  background: var(--blue-50); color: var(--blue-700);
+  border: 1px solid var(--blue-100);
+}
+.shift-badge.late {
+  background: var(--purple-50); color: var(--purple-700);
+  border: 1px solid var(--purple-100);
+}
+.shift-badge.full {
+  background: var(--orange-50); color: var(--orange-700);
+  border: 1px solid var(--orange-100);
+}
+.shift-badge.off {
+  background: var(--gray-50); color: var(--gray-400);
+  border: 1px solid var(--gray-100);
+}
+.shift-badge.closed {
+  background: var(--holiday-bg); color: var(--holiday-text);
+  border: 1px solid var(--gray-200);
+}
+.shift-badge .shift-time { display: block; font-size: 9px; font-weight: 400; opacity: .8; margin-top: 1px; }
+
+/* Legend */
+.legend {
+  display: flex; align-items: center; gap: 16px;
+  padding: 12px 16px; border-top: 1px solid var(--gray-100);
+  font-size: 11px; flex-wrap: wrap;
+}
+.legend-item { display: flex; align-items: center; gap: 5px; color: var(--gray-500); }
+.legend-dot {
+  width: 10px; height: 10px; border-radius: 2px;
+}
+.legend-dot.early { background: var(--blue-100); border: 1px solid var(--blue-500); }
+.legend-dot.late { background: var(--purple-100); border: 1px solid var(--purple-500); }
+.legend-dot.full { background: var(--orange-100); border: 1px solid var(--orange-500); }
+.legend-dot.off { background: var(--gray-100); border: 1px solid var(--gray-300); }
+.legend-dot.closed { background: var(--gray-200); border: 1px solid var(--gray-400); }
+
+/* ===== Staff Side Panel ===== */
+.staff-panel-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,.2);
+  z-index: 200; opacity: 0; visibility: hidden;
+  transition: all 250ms ease;
+}
+.staff-panel-overlay.open { opacity: 1; visibility: visible; }
+
+.staff-panel {
+  position: fixed; top: 28px; right: 0; bottom: 0;
+  width: 380px; max-width: 100vw;
+  background: var(--white); z-index: 201;
+  box-shadow: var(--shadow-lg);
+  transform: translateX(100%);
+  transition: transform 300ms cubic-bezier(.4,0,.2,1);
+  display: flex; flex-direction: column;
+  overflow-y: auto;
+}
+.staff-panel.open { transform: translateX(0); }
+
+.panel-header {
+  padding: 20px 24px; border-bottom: 1px solid var(--gray-200);
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; background: var(--white); z-index: 5;
+}
+.panel-header h3 { font-size: 16px; font-weight: 700; color: var(--gray-900); }
+.panel-close {
+  width: 32px; height: 32px; border: none; background: var(--gray-100);
+  border-radius: var(--radius); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--gray-500); font-size: 14px; transition: all var(--transition);
+}
+.panel-close:hover { background: var(--gray-200); color: var(--gray-700); }
+
+.panel-profile {
+  padding: 24px; text-align: center;
+  border-bottom: 1px solid var(--gray-100);
+}
+.panel-avatar {
+  width: 64px; height: 64px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 22px; color: white; font-weight: 700;
+  margin-bottom: 12px;
+}
+.panel-name { font-size: 18px; font-weight: 700; color: var(--gray-900); }
+.panel-role-badge {
+  display: inline-block; padding: 3px 12px; border-radius: 20px;
+  font-size: 11px; font-weight: 600; margin-top: 6px;
+}
+
+.panel-stats {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--gray-100);
+}
+.panel-stat {
+  background: var(--gray-50); border-radius: var(--radius);
+  padding: 14px; text-align: center;
+}
+.panel-stat .stat-value { font-size: 22px; font-weight: 700; color: var(--gray-900); }
+.panel-stat .stat-value span { font-size: 12px; font-weight: 500; color: var(--gray-500); }
+.panel-stat .stat-label { font-size: 11px; color: var(--gray-500); margin-top: 2px; }
+
+.panel-section {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--gray-100);
+}
+.panel-section h4 {
+  font-size: 12px; font-weight: 600; color: var(--gray-500);
+  text-transform: uppercase; letter-spacing: .06em;
+  margin-bottom: 12px;
+}
+.panel-section .wish-list { list-style: none; }
+.panel-section .wish-list li {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 0; border-bottom: 1px solid var(--gray-50);
+  font-size: 13px; color: var(--gray-700);
+}
+.panel-section .wish-list li i { color: var(--gray-400); font-size: 12px; }
+
+.skill-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.skill-tag {
+  padding: 4px 10px; border-radius: 20px;
+  font-size: 11px; font-weight: 500;
+  background: var(--gray-100); color: var(--gray-600);
+  border: 1px solid var(--gray-200);
+}
+.skill-tag.primary { background: var(--blue-50); color: var(--blue-700); border-color: var(--blue-100); }
+
+.shift-breakdown { display: flex; flex-direction: column; gap: 8px; }
+.breakdown-row {
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 13px;
+}
+.breakdown-row .label { display: flex; align-items: center; gap: 6px; color: var(--gray-600); }
+.breakdown-row .label .dot { width: 8px; height: 8px; border-radius: 2px; }
+.breakdown-row .count { font-weight: 600; color: var(--gray-800); }
+
+/* ===== Responsive ===== */
+@media (max-width: 1024px) {
+  .kpi-row { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; }
+  .mobile-toggle { display: flex; }
+  .kpi-row { grid-template-columns: 1fr 1fr; }
+  .toolbar { flex-direction: column; align-items: stretch; }
+  .toolbar-left, .toolbar-right { justify-content: center; flex-wrap: wrap; }
+  .staff-panel { width: 100vw; }
+  .content { padding: 16px; }
+}
+@media (max-width: 480px) {
+  .kpi-row { grid-template-columns: 1fr; }
+}
+
+/* Week view */
+.week-label-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 16px;
+  background: var(--gray-50);
+  border-bottom: 1px solid var(--gray-200);
+  font-size: 13px; font-weight: 600; color: var(--gray-600);
+}
+</style>
+</head>
+<body>
+
+<!-- Demo Banner -->
+<div class="demo-banner">
+  <i class="fas fa-flask"></i>
+  ポートフォリオ用のデモです — 実際のデータは含まれていません
+  <a href="/" style="color:#E0E7FF;margin-left:8px;text-decoration:underline;text-underline-offset:2px">← ポートフォリオに戻る</a>
+</div>
+
+<!-- Sidebar -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <h1>LUCIA</h1>
+    <span>Hair Salon Management</span>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-section">メインメニュー</div>
+    <a href="#"><i class="fas fa-th-large"></i>ダッシュボード</a>
+    <a href="#" class="active"><i class="fas fa-calendar-alt"></i>シフト表</a>
+    <a href="#"><i class="fas fa-users"></i>スタッフ管理</a>
+    <a href="#"><i class="fas fa-hand-paper"></i>希望シフト</a>
+    <div class="nav-section">レポート</div>
+    <a href="#"><i class="fas fa-chart-bar"></i>勤怠集計</a>
+    <a href="#"><i class="fas fa-file-invoice-dollar"></i>人件費レポート</a>
+    <div class="nav-section">システム</div>
+    <a href="#"><i class="fas fa-cog"></i>設定</a>
+    <a href="#"><i class="fas fa-question-circle"></i>ヘルプ</a>
+  </div>
+  <div class="sidebar-footer">
+    <div class="avatar">LU</div>
+    <div class="info">
+      <div class="name">LUCIA オーナー</div>
+      <div class="role">管理者</div>
+    </div>
+  </div>
+</nav>
+
+<!-- Main -->
+<div class="main">
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <button class="mobile-toggle" onclick="document.getElementById('sidebar').classList.toggle('open')">
+        <i class="fas fa-bars"></i>
+      </button>
+      <h2 class="header-title">シフト表</h2>
+    </div>
+    <div class="header-right">
+      <button class="icon-btn"><i class="fas fa-search"></i></button>
+      <button class="icon-btn">
+        <i class="fas fa-bell"></i>
+        <span class="badge">3</span>
+      </button>
+      <button class="icon-btn"><i class="fas fa-download"></i></button>
+    </div>
+  </header>
+
+  <!-- Content -->
+  <div class="content">
+    <!-- KPI -->
+    <div class="kpi-row" id="kpiRow"></div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <div class="month-nav">
+          <button onclick="changeMonth(-1)" title="前月"><i class="fas fa-chevron-left"></i></button>
+          <button class="today-btn" onclick="goToday()">今日</button>
+          <span class="month-label" id="monthLabel"></span>
+          <button onclick="changeMonth(1)" title="翌月"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        <div class="view-tabs">
+          <button class="active" id="tabMonth" onclick="setView('month')">月表示</button>
+          <button id="tabWeek" onclick="setView('week')">週表示</button>
+        </div>
+      </div>
+      <div class="toolbar-right">
+        <select class="filter-dropdown" id="staffFilter" onchange="renderShiftTable()">
+          <option value="all">全スタッフ</option>
+        </select>
+        <select class="filter-dropdown" id="shiftFilter" onchange="renderShiftTable()">
+          <option value="all">全シフト</option>
+          <option value="early">早番のみ</option>
+          <option value="late">遅番のみ</option>
+          <option value="full">通しのみ</option>
+          <option value="off">休みのみ</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Shift Table -->
+    <div class="shift-table-wrap">
+      <div class="shift-table-scroll" id="shiftTableScroll">
+        <div class="shift-grid" id="shiftGrid"></div>
+      </div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot early"></div>早番 9:00-17:00</div>
+        <div class="legend-item"><div class="legend-dot late"></div>遅番 12:00-20:00</div>
+        <div class="legend-item"><div class="legend-dot full"></div>通し 9:00-20:00</div>
+        <div class="legend-item"><div class="legend-dot off"></div>休み</div>
+        <div class="legend-item"><div class="legend-dot closed"></div>定休日（火曜）</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Staff Side Panel -->
+<div class="staff-panel-overlay" id="panelOverlay" onclick="closePanel()"></div>
+<div class="staff-panel" id="staffPanel">
+  <div class="panel-header">
+    <h3>スタッフ詳細</h3>
+    <button class="panel-close" onclick="closePanel()"><i class="fas fa-times"></i></button>
+  </div>
+  <div id="panelContent"></div>
+</div>
+
+<script>
+// ===== Data =====
+const STAFF = [
+  { id: 1, name: '鈴木 美咲', role: 'マネージャー', color: '#6366F1', skills: ['カット', 'カラー', 'パーマ', 'ヘッドスパ', 'マネジメント'], skillPrimary: ['カット','カラー','マネジメント'], hourlyRate: 1800 },
+  { id: 2, name: '田中 陽子', role: 'スタイリスト', color: '#EC4899', skills: ['カット', 'カラー', 'パーマ', 'トリートメント'], skillPrimary: ['カット','カラー'], hourlyRate: 1500 },
+  { id: 3, name: '佐藤 健太', role: 'スタイリスト', color: '#F59E0B', skills: ['カット', 'カラー', 'メンズパーマ', 'ヘッドスパ'], skillPrimary: ['カット','メンズパーマ'], hourlyRate: 1500 },
+  { id: 4, name: '高橋 あかり', role: 'ジュニアスタイリスト', color: '#10B981', skills: ['カット', 'カラー', 'シャンプー', 'ブロー'], skillPrimary: ['カット'], hourlyRate: 1200 },
+  { id: 5, name: '山田 翔太', role: 'アシスタント', color: '#3B82F6', skills: ['シャンプー', 'ブロー', 'カラー塗布', '受付'], skillPrimary: ['シャンプー'], hourlyRate: 1100 },
+  { id: 6, name: '伊藤 さくら', role: 'アシスタント', color: '#8B5CF6', skills: ['シャンプー', 'ブロー', 'トリートメント', '受付'], skillPrimary: ['シャンプー','受付'], hourlyRate: 1100 },
+];
+
+const SHIFT_TYPES = {
+  early: { label: '早番', time: '9:00-17:00', hours: 8, class: 'early' },
+  late:  { label: '遅番', time: '12:00-20:00', hours: 8, class: 'late' },
+  full:  { label: '通し', time: '9:00-20:00', hours: 11, class: 'full' },
+  off:   { label: '休み', time: '', hours: 0, class: 'off' },
+};
+
+const WISH_OFF = {
+  1: [5, 18],
+  2: [8, 22],
+  3: [3, 15, 28],
+  4: [10, 24],
+  5: [6, 20],
+  6: [12, 26],
+};
+
+// Seeded pseudo-random for consistent shift generation
+function seededRandom(seed) {
+  let s = seed;
+  return function() {
+    s = (s * 16807 + 0) % 2147483647;
+    return (s - 1) / 2147483646;
+  };
+}
+
+function generateShifts(year, month) {
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const shifts = {};
+  const seed = year * 100 + month;
+  const rng = seededRandom(seed);
+
+  STAFF.forEach(staff => {
+    shifts[staff.id] = {};
+    const wishes = (WISH_OFF[staff.id] || []).filter(d => d <= daysInMonth);
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dow = new Date(year, month, d).getDay();
+      // Tuesday = closed
+      if (dow === 2) { shifts[staff.id][d] = 'closed'; continue; }
+      // Wish off
+      if (wishes.includes(d)) { shifts[staff.id][d] = 'off'; continue; }
+      // Sunday: fewer staff
+      if (dow === 0) {
+        const r = rng();
+        if (staff.role === 'アシスタント' && r < 0.5) { shifts[staff.id][d] = 'off'; continue; }
+        if (r < 0.25) { shifts[staff.id][d] = 'off'; continue; }
+      }
+      // Regular day assignment
+      const r = rng();
+      if (staff.role === 'マネージャー') {
+        if (r < 0.15) shifts[staff.id][d] = 'full';
+        else if (r < 0.55) shifts[staff.id][d] = 'early';
+        else if (r < 0.85) shifts[staff.id][d] = 'late';
+        else shifts[staff.id][d] = 'off';
+      } else if (staff.role === 'スタイリスト') {
+        if (r < 0.1) shifts[staff.id][d] = 'full';
+        else if (r < 0.45) shifts[staff.id][d] = 'early';
+        else if (r < 0.8) shifts[staff.id][d] = 'late';
+        else shifts[staff.id][d] = 'off';
+      } else {
+        if (r < 0.05) shifts[staff.id][d] = 'full';
+        else if (r < 0.45) shifts[staff.id][d] = 'early';
+        else if (r < 0.75) shifts[staff.id][d] = 'late';
+        else shifts[staff.id][d] = 'off';
+      }
+    }
+  });
+  return shifts;
+}
+
+// ===== State =====
+const today = new Date();
+let currentYear = today.getFullYear();
+let currentMonth = today.getMonth();
+let currentView = 'month';
+let currentWeekStart = null;
+let currentShifts = {};
+
+// ===== Init =====
+function init() {
+  // Staff filter
+  const filter = document.getElementById('staffFilter');
+  STAFF.forEach(s => {
+    const opt = document.createElement('option');
+    opt.value = s.id;
+    opt.textContent = s.name;
+    filter.appendChild(opt);
+  });
+  updateMonth();
+}
+
+function updateMonth() {
+  currentShifts = generateShifts(currentYear, currentMonth);
+  document.getElementById('monthLabel').textContent =
+    `${currentYear}年${currentMonth + 1}月`;
+  renderKPI();
+  renderShiftTable();
+}
+
+function changeMonth(delta) {
+  currentMonth += delta;
+  if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+  if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+  currentWeekStart = null;
+  updateMonth();
+}
+
+function goToday() {
+  currentYear = today.getFullYear();
+  currentMonth = today.getMonth();
+  currentWeekStart = null;
+  updateMonth();
+}
+
+function setView(view) {
+  currentView = view;
+  document.getElementById('tabMonth').classList.toggle('active', view === 'month');
+  document.getElementById('tabWeek').classList.toggle('active', view === 'week');
+  if (view === 'week' && !currentWeekStart) {
+    // Find current week start (Monday)
+    const t = new Date(currentYear, currentMonth, 1);
+    const d = t.getDay();
+    currentWeekStart = 1; // Start from 1st for simplicity
+  }
+  renderShiftTable();
+}
+
+// ===== KPI =====
+function renderKPI() {
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  let totalHours = 0, totalWorkDays = 0, totalCost = 0;
+  let staffWorkDays = [];
+
+  STAFF.forEach(staff => {
+    let wd = 0, hours = 0;
+    for (let d = 1; d <= daysInMonth; d++) {
+      const st = currentShifts[staff.id]?.[d];
+      if (st && st !== 'off' && st !== 'closed') {
+        const sh = SHIFT_TYPES[st];
+        if (sh) {
+          hours += sh.hours;
+          wd++;
+        }
+      }
+    }
+    totalHours += hours;
+    totalWorkDays += wd;
+    totalCost += hours * staff.hourlyRate;
+    staffWorkDays.push(wd);
+  });
+
+  const avgDays = staffWorkDays.length ? (totalWorkDays / staffWorkDays.length).toFixed(1) : 0;
+
+  const html = `
+    <div class="kpi-card">
+      <div class="kpi-label"><i class="fas fa-clock"></i>今月の総労働時間</div>
+      <div class="kpi-value">${totalHours.toLocaleString()}<span>時間</span></div>
+      <div class="kpi-sub up"><i class="fas fa-arrow-up"></i>先月比 +3.2%</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label"><i class="fas fa-calendar-check"></i>平均出勤日数</div>
+      <div class="kpi-value">${avgDays}<span>日</span></div>
+      <div class="kpi-sub"><i class="fas fa-minus"></i>先月と同水準</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label"><i class="fas fa-yen-sign"></i>人件費概算</div>
+      <div class="kpi-value">¥${totalCost.toLocaleString()}</div>
+      <div class="kpi-sub down"><i class="fas fa-arrow-down"></i>予算比 -2.1%</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label"><i class="fas fa-users"></i>稼働スタッフ</div>
+      <div class="kpi-value">${STAFF.length}<span>名</span></div>
+      <div class="kpi-sub">フルタイム ${STAFF.filter(s => s.role !== 'アシスタント').length}名 / パート ${STAFF.filter(s => s.role === 'アシスタント').length}名</div>
+    </div>
+  `;
+  document.getElementById('kpiRow').innerHTML = html;
+}
+
+// ===== Shift Table =====
+function renderShiftTable() {
+  const grid = document.getElementById('shiftGrid');
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  const staffFilterVal = document.getElementById('staffFilter').value;
+  const shiftFilterVal = document.getElementById('shiftFilter').value;
+
+  const filteredStaff = staffFilterVal === 'all' ? STAFF : STAFF.filter(s => s.id == staffFilterVal);
+
+  let days = [];
+  if (currentView === 'week') {
+    // Get current week (7 days starting from Monday containing the 1st, or from today's week)
+    let start = currentWeekStart || 1;
+    for (let i = 0; i < 7; i++) {
+      const d = start + i;
+      if (d >= 1 && d <= daysInMonth) days.push(d);
+    }
+  } else {
+    for (let d = 1; d <= daysInMonth; d++) days.push(d);
+  }
+
+  const cols = days.length + 1; // +1 for staff column
+  grid.style.gridTemplateColumns = `140px repeat(${days.length}, minmax(56px, 1fr))`;
+
+  // Build staff counts
+  const staffCounts = {};
+  days.forEach(d => {
+    let count = 0;
+    STAFF.forEach(s => {
+      const st = currentShifts[s.id]?.[d];
+      if (st && st !== 'off' && st !== 'closed') count++;
+    });
+    staffCounts[d] = count;
+  });
+
+  let html = '';
+
+  // Header row
+  html += `<div class="col-staff-header">スタッフ</div>`;
+  days.forEach(d => {
+    const date = new Date(currentYear, currentMonth, d);
+    const dow = date.getDay();
+    const dayNames = ['日','月','火','水','木','金','土'];
+    let cls = 'col-date-header';
+    if (dow === 2) cls += ' holiday';
+    if (dow === 0) cls += ' sunday';
+    if (dow === 6) cls += ' saturday';
+    if (date.toDateString() === today.toDateString()) cls += ' today';
+
+    html += `<div class="${cls}">
+      <span class="day-num">${d}</span>
+      <span class="day-name">${dayNames[dow]}</span>
+      ${dow !== 2 ? `<span class="staff-count">${staffCounts[d]}名</span>` : '<span class="staff-count" style="background:#FEE2E2;color:#DC2626;">定休</span>'}
+    </div>`;
+  });
+
+  // Staff rows
+  filteredStaff.forEach(staff => {
+    // Staff cell
+    const initials = staff.name.split(' ').map(n => n[0]).join('');
+    html += `<div class="staff-cell" onclick="openPanel(${staff.id})">
+      <div class="staff-avatar" style="background:${staff.color}">${initials}</div>
+      <div class="staff-info">
+        <div class="staff-name">${staff.name}</div>
+        <div class="staff-role">${staff.role}</div>
+      </div>
+    </div>`;
+
+    // Shift cells
+    days.forEach(d => {
+      const st = currentShifts[staff.id]?.[d];
+      const date = new Date(currentYear, currentMonth, d);
+      const isToday = date.toDateString() === today.toDateString();
+
+      if (st === 'closed') {
+        html += `<div class="shift-cell${isToday ? ' today-col' : ''}">
+          <div class="shift-badge closed">定休</div>
+        </div>`;
+        return;
+      }
+
+      // Apply shift filter
+      if (shiftFilterVal !== 'all' && st !== shiftFilterVal) {
+        html += `<div class="shift-cell${isToday ? ' today-col' : ''}">
+          <div class="shift-badge" style="opacity:.2">-</div>
+        </div>`;
+        return;
+      }
+
+      const shiftInfo = SHIFT_TYPES[st];
+      if (!shiftInfo) {
+        html += `<div class="shift-cell${isToday ? ' today-col' : ''}"></div>`;
+        return;
+      }
+
+      html += `<div class="shift-cell${isToday ? ' today-col' : ''}">
+        <div class="shift-badge ${shiftInfo.class}">
+          ${shiftInfo.label}
+          ${shiftInfo.time ? `<span class="shift-time">${shiftInfo.time}</span>` : ''}
+        </div>
+      </div>`;
+    });
+  });
+
+  grid.innerHTML = html;
+
+  // Week navigation for week view
+  if (currentView === 'week') {
+    const wrap = document.getElementById('shiftTableScroll');
+    const weekNav = document.createElement('div');
+    weekNav.className = 'week-label-row';
+    const ws = currentWeekStart || 1;
+    const we = Math.min(ws + 6, daysInMonth);
+    weekNav.innerHTML = `
+      <button onclick="prevWeek()" style="border:none;background:none;cursor:pointer;font-size:13px;color:var(--gray-500)"><i class="fas fa-chevron-left"></i></button>
+      <span>${currentMonth+1}/${ws} - ${currentMonth+1}/${we}</span>
+      <button onclick="nextWeek()" style="border:none;background:none;cursor:pointer;font-size:13px;color:var(--gray-500)"><i class="fas fa-chevron-right"></i></button>
+    `;
+    // Remove old week nav if exists
+    const old = wrap.querySelector('.week-label-row');
+    if (old) old.remove();
+    wrap.insertBefore(weekNav, grid);
+  } else {
+    const wrap = document.getElementById('shiftTableScroll');
+    const old = wrap.querySelector('.week-label-row');
+    if (old) old.remove();
+  }
+}
+
+function prevWeek() {
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  currentWeekStart = Math.max(1, (currentWeekStart || 1) - 7);
+  renderShiftTable();
+}
+function nextWeek() {
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  const next = (currentWeekStart || 1) + 7;
+  if (next <= daysInMonth) { currentWeekStart = next; renderShiftTable(); }
+}
+
+// ===== Staff Panel =====
+function openPanel(staffId) {
+  const staff = STAFF.find(s => s.id === staffId);
+  if (!staff) return;
+
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  const initials = staff.name.split(' ').map(n => n[0]).join('');
+
+  // Calculate stats
+  let workDays = 0, totalHours = 0;
+  let earlyCnt = 0, lateCnt = 0, fullCnt = 0, offCnt = 0;
+  for (let d = 1; d <= daysInMonth; d++) {
+    const st = currentShifts[staff.id]?.[d];
+    if (!st || st === 'closed') continue;
+    if (st === 'off') { offCnt++; continue; }
+    const sh = SHIFT_TYPES[st];
+    if (sh) {
+      totalHours += sh.hours;
+      workDays++;
+      if (st === 'early') earlyCnt++;
+      if (st === 'late') lateCnt++;
+      if (st === 'full') fullCnt++;
+    }
+  }
+
+  const wishes = (WISH_OFF[staff.id] || []).filter(d => d <= daysInMonth);
+  const monthlyCost = totalHours * staff.hourlyRate;
+
+  let roleBadgeStyle = '';
+  if (staff.role === 'マネージャー') roleBadgeStyle = 'background:#EEF2FF;color:#4338CA;';
+  else if (staff.role === 'スタイリスト') roleBadgeStyle = 'background:#FDF2F8;color:#BE185D;';
+  else if (staff.role === 'ジュニアスタイリスト') roleBadgeStyle = 'background:#ECFDF5;color:#047857;';
+  else roleBadgeStyle = 'background:#F0F9FF;color:#0369A1;';
+
+  const html = `
+    <div class="panel-profile">
+      <div class="panel-avatar" style="background:${staff.color}">${initials}</div>
+      <div class="panel-name">${staff.name}</div>
+      <span class="panel-role-badge" style="${roleBadgeStyle}">${staff.role}</span>
+    </div>
+
+    <div class="panel-stats">
+      <div class="panel-stat">
+        <div class="stat-value">${workDays}<span>日</span></div>
+        <div class="stat-label">今月の出勤日数</div>
+      </div>
+      <div class="panel-stat">
+        <div class="stat-value">${totalHours}<span>h</span></div>
+        <div class="stat-label">総労働時間</div>
+      </div>
+      <div class="panel-stat">
+        <div class="stat-value">¥${monthlyCost.toLocaleString()}</div>
+        <div class="stat-label">月額人件費</div>
+      </div>
+      <div class="panel-stat">
+        <div class="stat-value">¥${staff.hourlyRate.toLocaleString()}</div>
+        <div class="stat-label">時給</div>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <h4><i class="fas fa-chart-pie" style="margin-right:6px"></i>シフト内訳</h4>
+      <div class="shift-breakdown">
+        <div class="breakdown-row">
+          <span class="label"><span class="dot" style="background:var(--blue-500)"></span>早番</span>
+          <span class="count">${earlyCnt}日</span>
+        </div>
+        <div class="breakdown-row">
+          <span class="label"><span class="dot" style="background:var(--purple-500)"></span>遅番</span>
+          <span class="count">${lateCnt}日</span>
+        </div>
+        <div class="breakdown-row">
+          <span class="label"><span class="dot" style="background:var(--orange-500)"></span>通し</span>
+          <span class="count">${fullCnt}日</span>
+        </div>
+        <div class="breakdown-row">
+          <span class="label"><span class="dot" style="background:var(--gray-300)"></span>休み</span>
+          <span class="count">${offCnt}日</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <h4><i class="fas fa-calendar-times" style="margin-right:6px"></i>希望休</h4>
+      <ul class="wish-list">
+        ${wishes.length ? wishes.map(d => {
+          const date = new Date(currentYear, currentMonth, d);
+          const dayNames = ['日','月','火','水','木','金','土'];
+          return `<li><i class="fas fa-circle-check" style="color:#10B981"></i>${currentMonth+1}/${d}（${dayNames[date.getDay()]}）</li>`;
+        }).join('') : '<li style="color:var(--gray-400)">希望休なし</li>'}
+      </ul>
+    </div>
+
+    <div class="panel-section">
+      <h4><i class="fas fa-star" style="margin-right:6px"></i>スキル・担当メニュー</h4>
+      <div class="skill-tags">
+        ${staff.skills.map(sk => `<span class="skill-tag ${staff.skillPrimary.includes(sk) ? 'primary' : ''}">${sk}</span>`).join('')}
+      </div>
+    </div>
+  `;
+
+  document.getElementById('panelContent').innerHTML = html;
+  document.getElementById('staffPanel').classList.add('open');
+  document.getElementById('panelOverlay').classList.add('open');
+}
+
+function closePanel() {
+  document.getElementById('staffPanel').classList.remove('open');
+  document.getElementById('panelOverlay').classList.remove('open');
+}
+
+// Close panel on Escape
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
+
+// Init
+init();
+</script>
+</body>
+</html>
